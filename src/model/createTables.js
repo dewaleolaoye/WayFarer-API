@@ -1,5 +1,6 @@
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+/* eslint-disable no-console */
+const { Pool } = require('pg');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -13,10 +14,8 @@ pool.on('connect', () => {
   console.log('connected to the db');
 });
 
-const createTables = () => {
-  // User database model
-  const Users = `CREATE TABLE IF NOT EXISTS
-  users (
+const createUserTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     first_name VARCHAR (128) NOT NULL,
     last_name VARCHAR(128) NOT NULL,
@@ -26,20 +25,57 @@ const createTables = () => {
     modified_on TIMESTAMP NOT NULL,
     is_admin BOOLEAN NOT NULL DEFAULT FALSE
    )`;
-  // eslint-disable-next-line arrow-parens
-  pool.query(Users).catch(err => {
-    // eslint-disable-next-line no-console
-    console.log(err);
-    pool.end();
-  });
+
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res.rows);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+};
+
+/**
+ * Drop User Table
+ */
+const dropUserTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS users returning *';
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+};
+/**
+ * Create All Tables
+ */
+const createAllTables = () => {
+  createUserTable();
+};
+/**
+ * Drop All Tables
+ */
+const dropAllTables = () => {
+  dropUserTable();
 };
 
 pool.on('remove', () => {
-  // eslint-disable-next-line no-console
   console.log('client removed');
   process.exit(0);
 });
 
-module.exports = createTables;
+
+module.exports = {
+  createUserTable,
+  createAllTables,
+  dropUserTable,
+  dropAllTables,
+};
 
 require('make-runnable');

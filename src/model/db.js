@@ -1,29 +1,28 @@
-const { Pool } = require('pg');
-const dotenv = require('dotenv');
+import { Pool } from 'pg';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 const pool = new Pool({
-  // eslint-disable-next-line comma-dangle
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
 });
 
-
-/**
- * @param {Object} queryText
- * @param {Object} values
- * @returns {Promise} res or err
- */
-function queryBuilder(queryText, values) {
-  return new Promise((resolve, reject) => {
-    pool.query(queryText, values)
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-}
-
-export default queryBuilder;
+export default {
+  /**
+   * DB Query
+   * @param {string} text
+   * @param {Array} params
+   * @returns {object} object
+   */
+  query(text, params) {
+    return new Promise((resolve, reject) => {
+      pool.query(text, params)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+};
