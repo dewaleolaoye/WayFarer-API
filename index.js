@@ -1,8 +1,15 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import Debug from 'debug';
+import user from './src/routes/user.route';
 
-const logger = new Debug('http');
 const app = express();
+const logger = new Debug('http');
+
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use('/api/v1/user', user);
 
 app.get('/', (req, res) => {
   res.send('Huuuuuuurray WayFarer');
