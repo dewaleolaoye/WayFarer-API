@@ -18,6 +18,16 @@ const User = {
       return res.status(400).send({ message: 'Some values are missing' });
     }
 
+    if (!Helper.isValidEmail(req.body.email)) {
+      return res.status(400).send({ message: 'Please enter a valid email address' });
+    }
+
+    if (!Helper.hashPassword(req.body.password)) {
+      return res.status(400).send({
+        status: 'error',
+        response: 'Password too short',
+      });
+    }
     const hashPassword = Helper.hashPassword(req.body.password);
     const values = [
       req.body.first_name,
@@ -39,7 +49,17 @@ const User = {
       console.log(rows);
       return res.status(201).send(rows[0]);
     } catch (error) {
-      return res.status(400).send(error);
+      // check if email already exist
+      if (error.routine === '_bt_check_unique') {
+        return res.status(409).json({
+          status: 'error',
+          error: 'User with the email already exist',
+        });
+      }
+      return res.status(400).json({
+        status: 'error',
+        error: 'oops! Something went wrong, try again',
+      });
     }
   },
 

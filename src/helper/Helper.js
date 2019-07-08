@@ -1,26 +1,47 @@
+/* eslint-disable indent */
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import jwt from 'jsonwebtoken';
 
 const Helper = {
   /**
-       * Hash Password Method
-       * @param {string} Password
-       * @returns {string} returns hashed password
-       */
+   * Hash Password Method
+   * @param {string} password
+   * @returns {string} returns hashed password
+   */
+  // eslint-disable-next-line consistent-return
   hashPassword(password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+    if (password.length > 4) {
+      return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+    }
   },
-
   /**
-       * compare Password
-       * @param {string} hashPassword
-       * @param {string} password
-       * @returns {Boolean} return True or False
-       */
+   * comparePassword
+   * @param {string} hashPassword
+   * @param {string} password
+   * @returns {Boolean} return True or False
+   */
   comparePassword(hashPassword, password) {
     return bcrypt.compareSync(password, hashPassword);
+  },
+  /**
+   * isValidEmail helper method
+   * @param {string} email
+   * @returns {Boolean} True or False
+   */
+  isValidEmail(email) {
+    return /\S+@\S+\.\S+/.test(email);
+  },
+  /**
+   * Gnerate Token
+   * @param {string} id
+   * @returns {string} token
+   */
+  generateToken(id) {
+    const token = jwt.sign({
+      userId: id,
+    },
+      process.env.SECRET, { expiresIn: '7d' });
+    return token;
   },
 };
 
