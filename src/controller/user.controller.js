@@ -1,7 +1,7 @@
 // import Debug from 'debug';
-import bcrypt from 'bcrypt';
-import db from '../model/db';
 // import createUser from '../model/user.model';
+import db from '../model/db';
+import Auth from '../middleware/Auth';
 import Helper from '../helper/Helper';
 
 // const logger = new Debug('http');
