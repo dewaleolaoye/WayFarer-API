@@ -36,9 +36,10 @@ const Helper = {
    * @param {string} id
    * @returns {string} token
    */
+  // eslint-disable-next-line camelcase
   generateToken(id) {
     const token = jwt.sign({
-      userId: id,
+      user_id: id,
     },
       process.env.SECRET, { expiresIn: '7d' });
     return token;

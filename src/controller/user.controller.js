@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 // import Debug from 'debug';
+import bcrypt from 'bcrypt';
 import db from '../model/db';
 // import createUser from '../model/user.model';
 import Helper from '../helper/Helper';
@@ -15,17 +15,23 @@ const User = {
 
   async create(req, res) {
     if (!req.body.email || !req.body.password) {
-      return res.status(400).send({ message: 'Some values are missing' });
+      return res.status(400).send({
+        status: 'error',
+        error: 'Some values are missing',
+      });
     }
 
     if (!Helper.isValidEmail(req.body.email)) {
-      return res.status(400).send({ message: 'Please enter a valid email address' });
+      return res.status(400).send({
+        status: 'error',
+        error: 'Please enter a valid email address',
+      });
     }
 
     if (!Helper.hashPassword(req.body.password)) {
       return res.status(400).send({
         status: 'error',
-        response: 'Password too short',
+        error: 'Password too short',
       });
     }
     const hashPassword = Helper.hashPassword(req.body.password);
@@ -46,7 +52,6 @@ const User = {
 
     try {
       const { rows } = await db.query(createUser, values);
-      console.log(rows);
       return res.status(201).send(rows[0]);
     } catch (error) {
       // check if email already exist
@@ -63,6 +68,54 @@ const User = {
     }
   },
 
+  /**
+* Create A User
+* @param {object} req
+* @param {object} res
+* @returns {object} user object
+*/
+  // eslint-disable-next-line consistent-return
+  async login(req, res) {
+    if (!req.body.email || !req.body.password) {
+      return res.status(400).send({
+        status: 'error',
+        error: 'Some values are missing',
+      });
+    }
+
+    if (!Helper.isValidEmail(req.body.email)) {
+      return res.status(400).send({
+        status: 'error',
+        error: 'Please enter a valid email address',
+      });
+    }
+
+    const userLogin = 'SELECT * FROM users WHERE email = $1';
+
+    try {
+      const { rows } = await db.query(userLogin, [req.body.email]);
+      // console.log(rows[0]);
+      if (!rows[0]) {
+        res.status(404).send({
+          status: 'error',
+          error: 'User not found',
+        });
+      }
+
+      if (!Helper.comparePassword(rows[0].password, req.body.password)) {
+        res.status(400).send({
+          status: 'error',
+          error: 'Email or Password not correct',
+        });
+      }
+      return res.status(200).send(rows[0]);
+    } catch (error) {
+      return res.status(400).send({
+        status: 'error',
+        error: 'The credentials you provided is incorrect CATCH',
+      });
+    }
+  },
 };
 
 export default User;

@@ -28,7 +28,7 @@ const createUserTable = () => {
 
   pool.query(queryText)
     .then((res) => {
-      console.log(res.rows);
+      console.log(res);
       pool.end();
     })
     .catch((err) => {
