@@ -9,9 +9,7 @@ const Helper = {
    */
   // eslint-disable-next-line consistent-return
   hashPassword(password) {
-    if (password.length > 4) {
-      return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
-    }
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
   },
   /**
    * comparePassword

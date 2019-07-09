@@ -1,10 +1,7 @@
-// import Debug from 'debug';
-// import createUser from '../model/user.model';
 import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
 
-// const logger = new Debug('http');
 const User = {
   /**
    * Create A User
@@ -12,7 +9,6 @@ const User = {
    * @param {object} res
    * @returns {object} user object
    */
-
   async create(req, res) {
     if (!req.body.email || !req.body.password) {
       return res.status(400).send({
@@ -109,7 +105,6 @@ const User = {
 
     try {
       const { rows } = await db.query(userLogin, [req.body.email]);
-      // console.log(rows[0]);
       if (!rows[0]) {
         res.status(404).send({
           status: 'error',
@@ -118,7 +113,7 @@ const User = {
       }
 
       if (!Helper.comparePassword(rows[0].password, req.body.password)) {
-        res.status(400).send({
+        res.status(400).json({
           status: 'error',
           error: 'Email or Password not correct',
         });
@@ -129,7 +124,6 @@ const User = {
       } = rows[0];
       // generate token
       const token = Authentication.generateToken(rows[0].user_id);
-
       return res.status(201).json({
         status: 'success',
         data: {
@@ -143,7 +137,7 @@ const User = {
     } catch (error) {
       return res.status(400).send({
         status: 'error',
-        error: 'The credentials you provided is incorrect CATCH',
+        error: 'The credentials you provided is incorrect',
       });
     }
   },
