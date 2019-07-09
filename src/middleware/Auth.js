@@ -40,7 +40,6 @@ const Authentication = {
     try {
       // verify user provided token
       const decoded = await jwt.verify(token, process.env.SECRET);
-
       const text = 'SELECT * FROM users WHERE user_id = $1';
       const { rows } = await db.query(text, [decoded.user_id]);
 
