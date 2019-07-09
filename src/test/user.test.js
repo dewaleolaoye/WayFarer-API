@@ -18,6 +18,7 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 const signupUrl = '/api/v1/auth/signup';
+const signinUrl = '/api/v1/auth/signin';
 
 describe(`POST ${signupUrl}`, () => {
   it('should sign up user successfully', (done) => {
@@ -35,6 +36,23 @@ describe(`POST ${signupUrl}`, () => {
         expect(body.data).to.be.have.property('last_name');
         expect(body.data).to.be.have.property('is_admin');
         expect(body.data).to.be.have.property('email');
+        done();
+      });
+  });
+});
+
+describe(`POST ${signinUrl}`, () => {
+  it('should sign in user successfully', (done) => {
+    chai
+      .request(app)
+      .post(signinUrl)
+      .send(correctUser)
+      .end((err, res) => {
+        const { body } = res;
+        expect(res.status).to.be.equal(201);
+        expect(res.status).to.be.a('number');
+        expect(body.data).to.be.have.property('email');
+        expect(body.data).to.be.have.property('token');
         done();
       });
   });
