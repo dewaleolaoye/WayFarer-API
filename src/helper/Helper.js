@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 const Helper = {
   /**
@@ -30,18 +29,6 @@ const Helper = {
    */
   isValidEmail(email) {
     return /\S+@\S+\.\S+/.test(email);
-  },
-  /**
-   * Gnerate Token
-   * @param {string} id
-   * @returns {string} token
-   */
-  generateToken(id) {
-    const token = jwt.sign({
-      userId: id,
-    },
-      process.env.SECRET, { expiresIn: '7d' });
-    return token;
   },
 };
 
