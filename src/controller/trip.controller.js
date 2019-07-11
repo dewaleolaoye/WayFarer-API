@@ -7,6 +7,7 @@ import {
   createTripQuery,
   busAvailability,
   getAllTripQuery,
+  getAllBusQuery,
 } from '../model/trip.model';
 // import user from '../controller/user.controller';
 
@@ -154,6 +155,25 @@ const Trip = {
   async getAllTrips(req, res) {
     try {
       const { rows } = await db.query(getAllTripQuery);
+      return res.status(200).json({
+        status: 'success',
+        data: rows,
+      });
+    } catch (error) {
+      // console.log(error);
+    }
+  },
+
+  /**
+    * Admin can see all buses
+    * @param {object} req
+    * @param {object} res
+    * @returns {object} bus object
+    */
+  // eslint-disable-next-line consistent-return
+  async getAllBus(req, res) {
+    try {
+      const { rows } = await db.query(getAllBusQuery);
       return res.status(200).json({
         status: 'success',
         data: rows,
