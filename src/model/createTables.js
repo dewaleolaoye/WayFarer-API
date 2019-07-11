@@ -10,25 +10,25 @@ const pool = new Pool({
 
 const createTable = () => {
   // users
-  // const Users = `CREATE TABLE IF NOT EXISTS 
-  // users (
-  //   user_id SERIAL PRIMARY KEY,
-  //   first_name VARCHAR (128) NOT NULL,
-  //   last_name VARCHAR(128) NOT NULL,
-  //   email VARCHAR (254) UNIQUE NOT NULL,
-  //   password VARCHAR(128) NOT NULL,
-  //   created_on TIMESTAMP DEFAULT Now(),
-  //   modified_on TIMESTAMP NOT NULL,
-  //   is_admin BOOLEAN NOT NULL DEFAULT FALSE
-  //  )`;
+  const Users = `CREATE TABLE IF NOT EXISTS 
+  users (
+    user_id SERIAL PRIMARY KEY,
+    first_name VARCHAR (128) NOT NULL,
+    last_name VARCHAR(128) NOT NULL,
+    email VARCHAR (254) UNIQUE NOT NULL,
+    password VARCHAR(128) NOT NULL,
+    created_on TIMESTAMP DEFAULT Now(),
+    modified_on TIMESTAMP NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE
+   )`;
 
-  // pool.query(Users).then((res) => {
-  //   console.log(res);
-  //   pool.end();
-  // }).catch((err) => {
-  //   console.log(err);
-  //   pool.end();
-  // });
+  pool.query(Users).then((res) => {
+    console.log(res);
+    pool.end();
+  }).catch((err) => {
+    console.log(err);
+    pool.end();
+  });
 
   // Trip
   const Trips = `CREATE TABLE IF NOT EXISTS 
@@ -55,24 +55,24 @@ const createTable = () => {
   });
 
   // Bus
-  // const Bus = `CREATE TABLE IF NOT EXISTS
-  // bus (
-  //   bus_id SERIAL PRIMARY KEY,
-  //   number_plate VARCHAR(128) UNIQUE NOT NULL,
-  //   manufacturer VARCHAR(128),
-  //   model VARCHAR(128),
-  //   year VARCHAR(128),
-  //   capacity INTEGER NOT NULL,
-  //   created_on TIMESTAMP NOT NULL
-  //   )`;
+  const Bus = `CREATE TABLE IF NOT EXISTS
+  bus (
+    bus_id SERIAL PRIMARY KEY,
+    number_plate VARCHAR(128) UNIQUE NOT NULL,
+    manufacturer VARCHAR(128),
+    model VARCHAR(128),
+    year VARCHAR(128),
+    capacity INTEGER NOT NULL,
+    created_on TIMESTAMP NOT NULL
+    )`;
 
-  // pool.query(Bus).then((res) => {
-  //   console.log(res);
-  //   pool.end();
-  // }).catch((err) => {
-  //   console.log(err);
-  //   pool.end();
-  // });
+  pool.query(Bus).then((res) => {
+    console.log(res);
+    pool.end();
+  }).catch((err) => {
+    console.log(err);
+    pool.end();
+  });
 };
 
 pool.on('connect', () => {

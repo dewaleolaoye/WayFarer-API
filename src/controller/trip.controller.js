@@ -48,14 +48,12 @@ const Trip = {
         },
       });
     } catch (error) {
-      console.log(error);
-      // console.log(error);
-      // if (error.routine === '_bt_check_unique') {
-      //   return res.status(409).json({
-      //     status: 'error',
-      //     error: 'Bus already exist',
-      //   });
-      // }
+      if (error.routine === '_bt_check_unique') {
+        return res.status(409).json({
+          status: 'error',
+          error: 'Bus already exist',
+        });
+      }
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, contact our engineers',
@@ -71,19 +69,36 @@ const Trip = {
   */
   async createTrip(req, res) {
     // check if user is an Admin
+    // eslint-disable-next-line object-curly-newline
+    const { bus_id, origin, destination, trip_date, fare } = req.body;
+    // eslint-disable-next-line prefer-const
+    let { status } = req.body;
+
+    if (status === null || status === 'undefined') {
+      const newStatus = 'active';
+      return newStatus;
+    }
+
+    // if (!(bus_id || origin || destination || destination || trip_date || fare)) {
+    //   return res.status(400).json({
+    //     status: 'error',
+    //     error: 'All fields are required',
+    //   });
+    // }
     const values = [
-      req.body.bus_id,
+      bus_id,
       new Date(),
-      req.body.origin,
-      req.body.destination,
-      req.body.trip_date,
-      req.body.fare,
+      origin,
+      destination,
+      trip_date,
+      fare,
       'active',
       new Date(),
     ];
 
     try {
-      const bus = await db.query(busAvailability, [req.body.trip_date, req.body.bus_id, 'active']);
+      // check if bus is available
+      const bus = await db.query(busAvailability, [trip_date, bus_id, 'active']);
       if (bus.rows[0]) {
         return res.status(409).json({
           status: 'error',
@@ -91,16 +106,31 @@ const Trip = {
         });
       }
       const { rows } = await db.query(createTripQuery, values);
+      const { trip_id } = rows[0];
       return res.status(201).json({
         status: 'success',
-        data: rows[0],
+        data: {
+          trip_id,
+          bus_id,
+          origin,
+          destination,
+          trip_date,
+          fare,
+          status,
+        },
       });
     } catch (error) {
-      console.log(error);
       if (error.routine === 'ri_ReportViolation') {
         return res.status(400).json({
           status: 'error',
           error: 'No bus with such ID found',
+        });
+      }
+
+      if (error.routine === '_bt_check_unique') {
+        return res.status(400).json({
+          status: 'error',
+          error: 'Bus is Active, please use another',
         });
       }
       return res.status(400).json({
