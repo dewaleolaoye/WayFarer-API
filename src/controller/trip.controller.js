@@ -2,7 +2,12 @@
 import db from '../model/db';
 // import Authentication from '../middleware/Auth';
 // import Helper from '../helper/Helper';
-import { createBusQuery, createTripQuery, busAvailability } from '../model/trip.model';
+import {
+  createBusQuery,
+  createTripQuery,
+  busAvailability,
+  getAllTripQuery,
+} from '../model/trip.model';
 // import user from '../controller/user.controller';
 
 const Trip = {
@@ -137,6 +142,24 @@ const Trip = {
         status: 'error',
         error: 'Something went wrong, try again or contact our engineers',
       });
+    }
+  },
+  /**
+   * Both Admin and User see all trips
+   * @param {object} req
+   * @param {object} res
+   * @returns {object} bus object
+   */
+  // eslint-disable-next-line consistent-return
+  async getAllTrips(req, res) {
+    try {
+      const { rows } = await db.query(getAllTripQuery);
+      return res.status(200).json({
+        status: 'success',
+        data: rows,
+      });
+    } catch (error) {
+      console.log(error);
     }
   },
 };
