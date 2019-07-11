@@ -38,7 +38,7 @@ const createTable = () => {
   const Bus = `CREATE TABLE IF NOT EXISTS
   bus (
     bus_id SERIAL PRIMARY KEY,
-    number_plate VARCHAR(128) NOT NULL,
+    number_plate VARCHAR(128),
     manufacturer VARCHAR(128) NOT NULL,
     model VARCHAR(128) NOT NULL,
     year VARCHAR(128) NOT NULL,
