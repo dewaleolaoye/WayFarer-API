@@ -3,7 +3,7 @@ import Trip from '../controller/trip.controller';
 
 const router = express.Router();
 
+router.post('/trips', Trip.createTrip);
 router.post('/trips/bus', Trip.addBus);
-// router.post('/signin', User.login);
 
 export default router;

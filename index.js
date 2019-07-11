@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import Debug from 'debug';
+import cors from 'cors';
 import user from './src/routes/user.route';
 import Trip from './src/routes/trip.route';
 
@@ -8,6 +9,7 @@ const app = express();
 const logger = new Debug('http');
 
 app.use(express.json());
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
