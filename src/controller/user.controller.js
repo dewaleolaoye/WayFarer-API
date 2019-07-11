@@ -1,6 +1,7 @@
 import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
+import { createUser, loginUser } from '../model/user.model';
 
 const User = {
   /**
@@ -40,11 +41,6 @@ const User = {
       new Date(),
       false,
     ];
-
-    const createUser = `INSERT INTO 
-      users (first_name, last_name, email, password, created_on, modified_on, is_admin) 
-      VALUES($1, $2, $3, $4, $5, $6, $7)
-      returning *`;
 
     try {
       const { rows } = await db.query(createUser, values);
@@ -101,10 +97,8 @@ const User = {
       });
     }
 
-    const userLogin = 'SELECT * FROM users WHERE email = $1';
-
     try {
-      const { rows } = await db.query(userLogin, [req.body.email]);
+      const { rows } = await db.query(loginUser, [req.body.email]);
       if (!rows[0]) {
         res.status(404).send({
           status: 'error',
