@@ -9,6 +9,7 @@ bus (number_plate, manufacturer, model, year, capacity, created_on)
       returning bus_id, number_plate, capacity`;
 
 const getAllTripQuery = 'SELECT * FROM trip';
+const getAllBusQuery = 'SELECT * FROM bus';
 
 const busAvailability = 'SELECT * FROM trip WHERE (trip_date = $1 AND bus_id = $2 AND status = $3)';
 
@@ -18,4 +19,5 @@ export {
   createBusQuery,
   busAvailability,
   getAllTripQuery,
+  getAllBusQuery,
 };
