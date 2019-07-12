@@ -1,7 +1,11 @@
+/* eslint-disable camelcase */
+import moment from 'moment';
 import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
+import validate from '../helper/validate';
 import { createUser, loginUser } from '../model/user.model';
+
 
 const User = {
   /**
@@ -10,45 +14,55 @@ const User = {
    * @param {object} res
    * @returns {object} user object
    */
+
   async create(req, res) {
-    if (!req.body.email || !req.body.password) {
+    const {
+      first_name, last_name, email, password,
+    } = req.body;
+    let { is_admin } = req.body;
+
+    if (!first_name || !last_name || !email || !password) {
       return res.status(400).send({
         status: 'error',
-        error: 'Some values are missing',
+        error: 'All fields are required',
       });
     }
 
-    if (!Helper.isValidEmail(req.body.email)) {
+    if (!is_admin) {
+      is_admin = false;
+    }
+
+    if (!validate.isValidEmail(email)) {
       return res.status(400).send({
         status: 'error',
         error: 'Please enter a valid email address',
       });
     }
 
-    if (!Helper.hashPassword(req.body.password)) {
-      return res.status(400).send({
+    if (validate.passwordLength(password)) {
+      return res.status(400).json({
         status: 'error',
-        error: 'Password too short',
+        error: 'Password length too short',
       });
     }
+
     const hashPassword = Helper.hashPassword(req.body.password);
+
     const values = [
-      req.body.first_name,
-      req.body.last_name,
-      req.body.email,
+      first_name,
+      last_name,
+      email,
       hashPassword,
-      new Date(),
-      new Date(),
-      false,
+      moment(new Date()),
+      moment(new Date()),
+      is_admin,
     ];
 
     try {
-      const { rows } = await db.query(createUser, values);
+      const { rows } = await db.query(createUser, values, is_admin);
+      const { user_id } = rows[0];
       const token = Authentication.generateToken(rows[0].user_id);
-      const {
-        // eslint-disable-next-line camelcase
-        user_id, email, first_name, last_name, is_admin,
-      } = rows[0];
+
       return res.status(201).json({
         status: 'success',
         data: {
@@ -61,6 +75,8 @@ const User = {
         },
       });
     } catch (error) {
+      console.log(error);
+
       // check if email already exist
       if (error.routine === '_bt_check_unique') {
         return res.status(409).json({
@@ -68,7 +84,7 @@ const User = {
           error: 'User with the email already exist',
         });
       }
-      return res.status(400).json({
+      return res.status(500).json({
         status: 'error',
         error: 'Oops! Something went wrong, try again',
       });
