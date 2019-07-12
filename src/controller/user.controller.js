@@ -1,6 +1,8 @@
+/* eslint-disable camelcase */
 import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
+import validate from '../helper/validate';
 import { createUser, loginUser } from '../model/user.model';
 
 const User = {
@@ -11,26 +13,31 @@ const User = {
    * @returns {object} user object
    */
   async create(req, res) {
-    if (!req.body.email || !req.body.password) {
+    const {
+      first_name, last_name, email, password,
+    } = req.body;
+
+    if (!first_name || !last_name || !email || !password) {
       return res.status(400).send({
         status: 'error',
-        error: 'Some values are missing',
+        error: 'All fields are required',
       });
     }
 
-    if (!Helper.isValidEmail(req.body.email)) {
+    if (!Helper.isValidEmail(email)) {
       return res.status(400).send({
         status: 'error',
         error: 'Please enter a valid email address',
       });
     }
 
-    if (!Helper.hashPassword(req.body.password)) {
-      return res.status(400).send({
+    if (validate.passwordLength(password)) {
+      return res.status(400).json({
         status: 'error',
-        error: 'Password too short',
+        error: 'Password length too short',
       });
     }
+
     const hashPassword = Helper.hashPassword(req.body.password);
     const values = [
       req.body.first_name,
