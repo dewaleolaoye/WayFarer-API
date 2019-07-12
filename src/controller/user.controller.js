@@ -28,9 +28,8 @@ const User = {
       });
     }
 
-    if (!is_admin) {
-      is_admin = false;
-    }
+    // eslint-disable-next-line no-unused-expressions
+    !is_admin ? is_admin = false : '';
 
     if (!validate.isValidEmail(email)) {
       return res.status(400).send({
