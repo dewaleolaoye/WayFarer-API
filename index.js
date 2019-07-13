@@ -4,6 +4,7 @@ import Debug from 'debug';
 import cors from 'cors';
 import user from './src/routes/user.route';
 import Trip from './src/routes/trip.route';
+import Bus from './src/routes/bus.route';
 
 const app = express();
 const logger = new Debug('http');
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 
 app.use('/api/v1/auth', user);
 app.use('/api/v1/', Trip);
+app.use('/api/v1/', Bus);
 
 const port = process.env.PORT || 6000;
 const server = app.listen(port, () => logger(`App runing on ${port}`));
