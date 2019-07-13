@@ -11,10 +11,10 @@ const Authentication = {
      */
 
   // eslint-disable-next-line camelcase
-  generateToken(id) {
-    const token = jwt.sign({ user_id: id },
+  generateToken(user_id, is_admin, email) {
+    const token = jwt.sign({ user_id, is_admin, email },
       process.env.SECRET, {
-        expiresIn: '7d',
+        expiresIn: '24h',
       });
     return token;
   },
@@ -28,20 +28,12 @@ const Authentication = {
    */
 
   async verifyToken(req, res, next) {
-    const { token } = req.headers['x-access-token'];
-    // check if token is provided
-    if (!token) {
-      res.status(403).json({
-        status: 'error',
-        error: 'Unauthorized, You are to login',
-      });
-    }
-
+    const { token } = req.headers;
     try {
       // verify user provided token
       const decoded = await jwt.verify(token, process.env.SECRET);
       const text = 'SELECT * FROM users WHERE user_id = $1';
-      const { rows } = await db.query(text, [decoded.user_id]);
+      const { rows } = await db.query(text, [decoded.user_id], [decoded.is_admin]);
 
       // check valid users
       if (!rows[0]) {
@@ -52,12 +44,14 @@ const Authentication = {
       }
 
       req.user = decoded.user_id;
-
+      req.admin = decoded.is_admin;
       return next();
     } catch (error) {
+      console.log(error);
+
       return res.status(400).json({
         status: 400,
-        error: 'Ooops! Something went wrong. Contact our Engineers',
+        error: 'Ooops! Something went wrong.',
       });
     }
   },

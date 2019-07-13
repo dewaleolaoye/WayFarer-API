@@ -58,9 +58,10 @@ const User = {
     ];
 
     try {
-      const { rows } = await db.query(createUser, values, is_admin);
+      const { rows } = await db.query(createUser, values);
+      // eslint-disable-next-line no-shadow
       const { user_id } = rows[0];
-      const token = Authentication.generateToken(rows[0].user_id);
+      const token = Authentication.generateToken(rows[0].user_id, is_admin, email);
 
       return res.status(201).json({
         status: 'success',
@@ -74,8 +75,6 @@ const User = {
         },
       });
     } catch (error) {
-      console.log(error);
-
       // check if email already exist
       if (error.routine === '_bt_check_unique') {
         return res.status(409).json({
@@ -115,9 +114,9 @@ const User = {
     try {
       const { rows } = await db.query(loginUser, [req.body.email]);
       if (!rows[0]) {
-        res.status(404).send({
+        res.status(401).send({
           status: 'error',
-          error: 'User not found',
+          error: 'Some values are missing',
         });
       }
 
@@ -132,7 +131,7 @@ const User = {
         user_id, first_name, email, is_admin,
       } = rows[0];
       // generate token
-      const token = Authentication.generateToken(rows[0].user_id);
+      const token = Authentication.generateToken(rows[0].user_id, is_admin, email);
       return res.status(201).json({
         status: 'success',
         data: {

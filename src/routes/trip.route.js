@@ -1,11 +1,11 @@
 import express from 'express';
 import Trip from '../controller/trip.controller';
+import Authentication from '../middleware/Auth';
 
 const router = express.Router();
 
-router.post('/trips/bus', Trip.addBus);
-router.get('/trips/bus', Trip.getAllBus);
-router.post('/trips', Trip.createTrip);
-router.get('/trips', Trip.getAllTrips);
+
+router.post('/trips', Authentication.verifyToken, Trip.createTrip);
+router.get('/trips', Authentication.verifyToken, Trip.getAllTrips);
 
 export default router;
