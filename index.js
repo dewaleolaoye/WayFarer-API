@@ -18,7 +18,10 @@ app.use('/api/v1/auth', user);
 app.use('/api/v1/', Trip);
 app.use('/api/v1/', Bus);
 
-const port = process.env.PORT || 6000;
+app.get('', (req, res) => {
+  res.send('connected');
+});
+const port = process.env.PORT || 5000;
 const server = app.listen(port, () => logger(`App runing on ${port}`));
 
 module.exports = server;

@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+ import jwt from 'jsonwebtoken';
 import db from '../model/db';
 
 const Authentication = {
@@ -42,7 +42,7 @@ const Authentication = {
           error: 'Token provided is invalid',
         });
       }
-
+         
       req.user = decoded.user_id;
       req.admin = decoded.is_admin;
       return next();
