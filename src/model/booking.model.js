@@ -9,12 +9,14 @@ const find_user_query = 'SELECT * FROM users WHERE user_id = $1';
 const check_booked_query = 'SELECT * FROM bookings WHERE (trip_id = $1 and user_id = $2)';
 
 
-const get_all_admin_booking_query = 'SELECT * FROM bookings';
+const get_all_booking_admin_query = 'SELECT * FROM bookings';
+const get_all_booking_user_query = 'SELECT * FROM bookings WHERE emaili = $1';
 
 export {
   book_trip_query,
   get_trip_query,
   find_user_query,
   check_booked_query,
-  get_all_admin_booking_query,
+  get_all_booking_admin_query,
+  get_all_booking_user_query,
 };

@@ -7,7 +7,8 @@ import {
   get_trip_query,
   find_user_query,
   check_booked_query,
-  get_all_admin_booking_query,
+  get_all_booking_admin_query,
+  get_all_booking_user_query,
 } from '../model/booking.model';
 
 
@@ -72,13 +73,12 @@ const Bookings = {
     }
   },
   /**
-     * User can see his/her bookings
+     * Admin can see his/her bookings
      * @param {*} req
      * @param {*} res
    */
   // eslint-disable-next-line consistent-return
   async get_user_booking(req, res) {
-    console.log(req.admin);
     if (!req.admin) {
       res.status(400).json({
         status: 'error',
@@ -86,8 +86,9 @@ const Bookings = {
       });
     }
     try {
+      // Admin can see all bookings
       if (req.admin) {
-        const { rows } = await db.query(get_all_admin_booking_query);
+        const { rows } = await db.query(get_all_booking_admin_query);
         if (!rows[0]) {
           return res.status(404).json({
             status: 'error',
