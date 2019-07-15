@@ -78,7 +78,6 @@ const Bookings = {
    */
   // eslint-disable-next-line consistent-return
   async get_user_booking(req, res) {
-    console.log(req.admin);
     if (!req.admin) {
       res.status(400).json({
         status: 'error',
