@@ -8,6 +8,7 @@ import {
   find_user_query,
   check_booked_query,
   get_all_admin_booking_query,
+  get_all_user_booking_query,
 } from '../model/booking.model';
 
 
@@ -72,12 +73,12 @@ const Bookings = {
     }
   },
   /**
-     * User can see his/her bookings
+     * Admin can see all bookings
      * @param {*} req
      * @param {*} res
    */
   // eslint-disable-next-line consistent-return
-  async get_user_booking(req, res) {
+  async get_all_admin_booking(req, res) {
     if (!req.admin) {
       res.status(400).json({
         status: 'error',
@@ -98,6 +99,27 @@ const Bookings = {
           data: rows,
         });
       }
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Something went wrong, try again',
+      });
+    }
+  },
+
+  // eslint-disable-next-line consistent-return
+  async get_user_booking(req, res) {
+    try {
+      const { rows } = await db.query(get_all_user_booking_query, [req.user]);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Not found',
+        });
+      }
+      return res.status(200).json({
+        status: 'success',
+        data: rows,
+      });
     } catch (error) {
       return res.status(400).json({
         error: 'Something went wrong, try again',
