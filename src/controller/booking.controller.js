@@ -9,6 +9,7 @@ import {
   check_booked_query,
   get_all_admin_booking_query,
   get_all_user_booking_query,
+  delete_booking,
 } from '../model/booking.model';
 
 
@@ -122,6 +123,33 @@ const Bookings = {
       });
     } catch (error) {
       return res.status(400).json({
+        error: 'Something went wrong, try again',
+      });
+    }
+  },
+  /**
+ * User can delete their bookings
+ * @param {*} req
+ * @param {*} res
+ */
+  async deleteBooking(req, res) {
+    try {
+      const { rows } = await db.query(delete_booking, [req.params.booking_id, req.user]);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Not Found',
+        });
+      }
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'Booking successfully deleted',
+        },
+      });
+    } catch (error) {
+      return res.status(400).json({
+        status: 'error',
         error: 'Something went wrong, try again',
       });
     }
