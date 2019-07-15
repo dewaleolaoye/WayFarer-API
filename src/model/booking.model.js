@@ -8,9 +8,9 @@ const get_trip_query = 'SELECT * FROM trip WHERE trip_id = $1';
 const find_user_query = 'SELECT * FROM users WHERE user_id = $1';
 const check_booked_query = 'SELECT * FROM bookings WHERE (trip_id = $1 and user_id = $2)';
 
-
 const get_all_admin_booking_query = 'SELECT * FROM bookings';
 const get_all_user_booking_query = 'SELECT * FROM bookings WHERE user_id = $1';
+const delete_booking = 'DELETE FROM bookings WHERE (booking_id = $1 and user_id = $2) returning *';
 
 export {
   book_trip_query,
@@ -19,4 +19,5 @@ export {
   check_booked_query,
   get_all_admin_booking_query,
   get_all_user_booking_query,
+  delete_booking,
 };
