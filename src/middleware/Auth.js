@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import db from '../model/db';
 import { log } from 'util';
+import db from '../model/db';
 
 const Authentication = {
   /**

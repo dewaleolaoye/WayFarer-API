@@ -10,6 +10,7 @@ const check_booked_query = 'SELECT * FROM bookings WHERE (trip_id = $1 and user_
 
 
 const get_all_admin_booking_query = 'SELECT * FROM bookings';
+const get_all_user_booking_query = 'SELECT * FROM bookings WHERE user_id = $1';
 
 export {
   book_trip_query,
@@ -17,4 +18,5 @@ export {
   find_user_query,
   check_booked_query,
   get_all_admin_booking_query,
+  get_all_user_booking_query,
 };
