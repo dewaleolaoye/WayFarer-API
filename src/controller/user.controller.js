@@ -29,7 +29,7 @@ const User = {
     }
 
     // eslint-disable-next-line no-unused-expressions
-    !is_admin ? is_admin = false : '';
+    !is_admin ? is_admin = false : true;
 
     if (!validate.isValidEmail(email)) {
       return res.status(400).send({
@@ -119,7 +119,7 @@ const User = {
         });
       }
 
-      if (!Helper.comparePassword(rows[0].password, req.body.password)) {
+      if (!Helper.compare_password(rows[0].password, req.body.password)) {
         res.status(400).json({
           status: 'error',
           error: 'Email or Password not correct',
@@ -142,7 +142,7 @@ const User = {
         },
       });
     } catch (error) {
-      return res.status(400).send({
+      return res.status(401).send({
         status: 'error',
         error: 'The credentials you provided is incorrect',
       });

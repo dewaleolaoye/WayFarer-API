@@ -11,12 +11,12 @@ const Helper = {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
   },
   /**
-   * comparePassword
+   * compare_password
    * @param {string} hash_password
    * @param {string} password
    * @returns {Boolean} return True or False
    */
-  comparePassword(hash_password, password) {
+  compare_password(hash_password, password) {
     return bcrypt.compareSync(password, hash_password);
   },
 };
