@@ -19,9 +19,8 @@ export default {
       pool.query(text, params)
         .then((res) => {
           resolve(res);
-        })
-        .catch((err) => {
-          reject(err);
+        }).catch((error) => {
+          reject(error);
         });
     });
   },

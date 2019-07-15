@@ -1,6 +1,6 @@
+/* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 import moment from 'moment';
-import { log } from 'util';
 import db from '../model/db';
 import {
   book_trip_query,
@@ -15,10 +15,10 @@ import {
 
 const Bookings = {
   /**
-     * Users can book a seat for a trip
-     * @param {*} req
-     * @param {*} res
-   */
+   * Users can book a seat for a trip
+   * @param {*} req
+   * @param {*} res
+  */
   async book_trip(req, res) {
     const { trip_id, seat_number } = req.body;
     try {
@@ -66,7 +66,6 @@ const Bookings = {
         data: booking.rows[0],
       });
     } catch (error) {
-      log(error);
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, try again',
@@ -74,11 +73,10 @@ const Bookings = {
     }
   },
   /**
-     * Admin can see all bookings
-     * @param {*} req
-     * @param {*} res
-   */
-  // eslint-disable-next-line consistent-return
+   * Admin can see all bookings
+   * @param {*} req
+   * @param {*} res
+  */
   async get_all_admin_booking(req, res) {
     if (!req.admin) {
       res.status(400).json({
@@ -92,7 +90,7 @@ const Bookings = {
         if (!rows[0]) {
           return res.status(404).json({
             status: 'error',
-            error: 'Not found',
+            error: 'Bookings not found',
           });
         }
         return res.status(200).json({
@@ -101,21 +99,19 @@ const Bookings = {
         });
       }
     } catch (error) {
-      log(error);
       return res.status(400).json({
         error: 'Something went wrong, try again',
       });
     }
   },
 
-  // eslint-disable-next-line consistent-return
   async get_user_booking(req, res) {
     try {
       const { rows } = await db.query(get_all_user_booking_query, [req.user]);
       if (!rows[0]) {
         return res.status(404).json({
           status: 'error',
-          error: 'Not found',
+          error: 'Booking not found',
         });
       }
       return res.status(200).json({
