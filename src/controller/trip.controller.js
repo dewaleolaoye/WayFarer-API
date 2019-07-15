@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { log } from 'util';
 import db from '../model/db';
 
 import {
@@ -68,6 +69,7 @@ const Trip = {
         },
       });
     } catch (error) {
+      log(error);
       if (error.routine === 'ri_ReportViolation') {
         return res.status(400).json({
           status: 'error',

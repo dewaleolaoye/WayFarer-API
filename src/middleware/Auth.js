@@ -1,5 +1,6 @@
- import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import db from '../model/db';
+import { log } from 'util';
 
 const Authentication = {
   /**
@@ -42,13 +43,13 @@ const Authentication = {
           error: 'Token provided is invalid',
         });
       }
-         
+
       req.user = decoded.user_id;
       req.admin = decoded.is_admin;
+
       return next();
     } catch (error) {
-      console.log(error);
-
+      log(error);
       return res.status(400).json({
         status: 400,
         error: 'Ooops! Something went wrong.',
