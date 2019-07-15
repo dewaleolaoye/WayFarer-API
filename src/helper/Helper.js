@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+/* eslint-disable camelcase */
 import bcrypt from 'bcrypt';
 
 const Helper = {
@@ -7,29 +7,18 @@ const Helper = {
    * @param {string} password
    * @returns {string} returns hashed password
    */
-  // eslint-disable-next-line consistent-return
-  hashPassword(password) {
+  hash_password(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
   },
   /**
    * comparePassword
-   * @param {string} hashPassword
+   * @param {string} hash_password
    * @param {string} password
    * @returns {Boolean} return True or False
    */
-  comparePassword(hashPassword, password) {
-    return bcrypt.compareSync(password, hashPassword);
+  comparePassword(hash_password, password) {
+    return bcrypt.compareSync(password, hash_password);
   },
-  /**
-   * isValidEmail helper method
-   * @param {string} email
-   * @returns {Boolean} True or False
-   */
-  isValidEmail(email) {
-    return /\S+@\S+\.\S+/.test(email);
-  },
-
-
 };
 
 export default Helper;

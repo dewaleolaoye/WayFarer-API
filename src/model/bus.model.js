@@ -1,12 +1,13 @@
+/* eslint-disable camelcase */
 
-const createBusQuery = `INSERT INTO 
+const create_bus_query = `INSERT INTO 
 bus (number_plate, manufacturer, model, year, capacity, created_on) 
       VALUES($1, $2, $3, $4, $5, $6) 
       returning bus_id, number_plate, capacity`;
 
-const getAllBusQuery = 'SELECT * FROM bus';
+const get_all_bus_query = 'SELECT * FROM bus';
 
 export {
-  createBusQuery,
-  getAllBusQuery,
+  create_bus_query,
+  get_all_bus_query,
 };

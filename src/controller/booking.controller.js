@@ -101,6 +101,7 @@ const Bookings = {
         });
       }
     } catch (error) {
+      log(error);
       return res.status(400).json({
         error: 'Something went wrong, try again',
       });

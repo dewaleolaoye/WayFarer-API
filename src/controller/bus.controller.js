@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import db from '../model/db';
-import { createBusQuery, getAllBusQuery } from '../model/bus.model';
+import { create_bus_query, get_all_bus_query } from '../model/bus.model';
 
 const Bus = {
   /**
@@ -38,7 +38,7 @@ const Bus = {
           error: 'Unauthorized!',
         });
       }
-      const { rows } = await db.query(createBusQuery, values);
+      const { rows } = await db.query(create_bus_query, values);
       const { bus_id } = rows[0];
 
       return res.status(201).json({
@@ -81,7 +81,7 @@ const Bus = {
           error: 'Unauthorized!',
         });
       }
-      const { rows } = await db.query(getAllBusQuery);
+      const { rows } = await db.query(get_all_bus_query);
       return res.status(200).json({
         status: 'success',
         data: rows,
