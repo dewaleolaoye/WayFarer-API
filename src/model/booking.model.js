@@ -6,9 +6,11 @@ bookings (user_id, trip_id, created_on, bus_id, trip_date, seat_number, first_na
 
 const get_trip_query = 'SELECT * FROM trip WHERE trip_id = $1';
 const find_user_query = 'SELECT * FROM users WHERE user_id = $1';
+const check_booked_query = 'SELECT * FROM bookings WHERE (trip_id = $1 and user_id = $2)';
 
 export {
   book_trip_query,
   get_trip_query,
   find_user_query,
+  check_booked_query,
 };
