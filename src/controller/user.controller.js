@@ -45,13 +45,13 @@ const User = {
       });
     }
 
-    const hashPassword = Helper.hashPassword(req.body.password);
+    const hash_password = Helper.hash_password(req.body.password);
 
     const values = [
       first_name,
       last_name,
       email,
-      hashPassword,
+      hash_password,
       moment(new Date()),
       moment(new Date()),
       is_admin,
@@ -61,7 +61,7 @@ const User = {
       const { rows } = await db.query(create_user, values);
       // eslint-disable-next-line no-shadow
       const { user_id } = rows[0];
-      const token = Authentication.generateToken(rows[0].user_id, is_admin, email);
+      const token = Authentication.generate_token(rows[0].user_id, is_admin, email);
 
       return res.status(201).json({
         status: 'success',
@@ -95,7 +95,6 @@ const User = {
   * @param {object} res
   * @returns {object} user object
   */
-  // eslint-disable-next-line consistent-return
   async login(req, res) {
     if (!req.body.email || !req.body.password) {
       return res.status(400).send({
@@ -131,7 +130,7 @@ const User = {
         user_id, first_name, email, is_admin,
       } = rows[0];
       // generate token
-      const token = Authentication.generateToken(rows[0].user_id, is_admin, email);
+      const token = Authentication.generate_token(rows[0].user_id, is_admin, email);
       return res.status(201).json({
         status: 'success',
         data: {

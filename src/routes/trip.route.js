@@ -4,8 +4,8 @@ import Authentication from '../middleware/Auth';
 
 const router = express.Router();
 
-router.post('/trips', Authentication.verifyToken, Trip.createTrip);
-router.get('/trips', Authentication.verifyToken, Trip.getAllTrips);
-router.patch('/trips/:trip_id', Authentication.verifyToken, Trip.cancelATrip);
+router.post('/trips', Authentication.verify_token, Trip.create_trip);
+router.get('/trips', Authentication.verify_token, Trip.getAllTrips);
+router.patch('/trips/:trip_id', Authentication.verify_token, Trip.cancelATrip);
 
 export default router;

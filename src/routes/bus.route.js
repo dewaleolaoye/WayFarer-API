@@ -4,7 +4,7 @@ import Authentication from '../middleware/Auth';
 
 const router = express.Router();
 
-router.post('/trips/bus', Authentication.verifyToken, Bus.addBus);
-router.get('/trips/bus', Authentication.verifyToken, Bus.getAllBus);
+router.post('/trips/bus', Authentication.verify_token, Bus.addBus);
+router.get('/trips/bus', Authentication.verify_token, Bus.getAllBus);
 
 export default router;

@@ -3,10 +3,10 @@ import { log } from 'util';
 import db from '../model/db';
 
 import {
-  createTripQuery,
-  busAvailability,
-  getAllTripQuery,
-  cancelAtripQuery,
+  create_trip_query,
+  bus_availability,
+  get_all_trip_query,
+  cancel_a_trip_query,
 } from '../model/trip.model';
 
 
@@ -17,7 +17,7 @@ const Trip = {
   * @param {object} res
   * @returns {object} bus object
   */
-  async createTrip(req, res) {
+  async create_trip(req, res) {
     if (req.admin === false) {
       return res.status(403).json({
         status: 'error',
@@ -47,14 +47,14 @@ const Trip = {
 
     try {
       // check if bus is available
-      const bus = await db.query(busAvailability, [trip_date, bus_id, 'active']);
+      const bus = await db.query(bus_availability, [trip_date, bus_id, 'active']);
       if (bus.rows[0]) {
         return res.status(409).json({
           status: 'error',
           error: 'The bus has been schedule for another trip on the same date',
         });
       }
-      const { rows } = await db.query(createTripQuery, values);
+      const { rows } = await db.query(create_trip_query, values);
       const { trip_id } = rows[0];
       return res.status(201).json({
         status: 'success',
@@ -85,7 +85,7 @@ const Trip = {
       }
       return res.status(400).json({
         status: 'error',
-        error: 'Something went wrong, try again or contact our engineers aaaaaaah',
+        error: 'Something went wrong, try again or contact our engineers',
       });
     }
   },
@@ -98,13 +98,16 @@ const Trip = {
   // eslint-disable-next-line consistent-return
   async getAllTrips(req, res) {
     try {
-      const { rows } = await db.query(getAllTripQuery);
+      const { rows } = await db.query(get_all_trip_query);
       return res.status(200).json({
         status: 'success',
         data: rows,
       });
     } catch (error) {
-      // console.log(error);
+      return res.status(400).json({
+        status: 'error',
+        error: 'Something went wrong, try again',
+      });
     }
   },
 
@@ -123,7 +126,7 @@ const Trip = {
         req.params.trip_id,
       ];
 
-      const { rows } = await db.query(cancelAtripQuery, values);
+      const { rows } = await db.query(cancel_a_trip_query, values);
       if (rows.length <= 0) {
         return res.status(404).json({
           status: 'error',
@@ -135,7 +138,7 @@ const Trip = {
         message: 'Trip was cancelled sucessfully',
         data: rows[0],
       });
-    } catch (err) {
+    } catch (error) {
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, try again',

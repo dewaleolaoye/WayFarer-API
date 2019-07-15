@@ -12,7 +12,7 @@ const Authentication = {
      */
 
   // eslint-disable-next-line camelcase
-  generateToken(user_id, is_admin, email) {
+  generate_token(user_id, is_admin, email) {
     const token = jwt.sign({ user_id, is_admin, email },
       process.env.SECRET, {
         expiresIn: '24h',
@@ -28,7 +28,7 @@ const Authentication = {
    * @param {*} next
    */
 
-  async verifyToken(req, res, next) {
+  async verify_token(req, res, next) {
     const { token } = req.headers;
     try {
       // verify user provided token
@@ -50,6 +50,13 @@ const Authentication = {
       return next();
     } catch (error) {
       log(error);
+      // eslint-disable-next-line no-cond-assign
+      if (error.name === 'tokenExpiredError') {
+        return res.status(401).json({
+          status: 'error',
+          error: 'Token Expired, request for a new one',
+        });
+      }
       return res.status(400).json({
         status: 400,
         error: 'Ooops! Something went wrong.',
