@@ -4,7 +4,7 @@ import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
 import validate from '../helper/validate';
-import { createUser, loginUser } from '../model/user.model';
+import { create_user, login_user } from '../model/user.model';
 
 
 const User = {
@@ -58,7 +58,7 @@ const User = {
     ];
 
     try {
-      const { rows } = await db.query(createUser, values);
+      const { rows } = await db.query(create_user, values);
       // eslint-disable-next-line no-shadow
       const { user_id } = rows[0];
       const token = Authentication.generateToken(rows[0].user_id, is_admin, email);
@@ -112,7 +112,7 @@ const User = {
     }
 
     try {
-      const { rows } = await db.query(loginUser, [req.body.email]);
+      const { rows } = await db.query(login_user, [req.body.email]);
       if (!rows[0]) {
         res.status(401).send({
           status: 'error',
