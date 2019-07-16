@@ -20,6 +20,17 @@ app.use('/api/v1/', Trip);
 app.use('/api/v1/', Bus);
 app.use('/api/v1', Booking);
 
+app.get('/', (req, res) => {
+  res.status(200).json(
+    {
+      status: 200,
+      data: [{
+        message: 'Welcome to WayFare API Home Route',
+      }],
+    },
+  );
+});
+
 const port = process.env.PORT || 5000;
 // eslint-disable-next-line no-console
 const server = app.listen(port, () => console.log(`App runing on ${port}`));
