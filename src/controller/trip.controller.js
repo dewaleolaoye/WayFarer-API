@@ -17,6 +17,7 @@ const Trip = {
   * @returns {object} bus object
   */
   async create_trip(req, res) {
+    console.log(res);
     // console.log(req.admin);
     if (req.admin === false) {
       return res.status(403).json({
