@@ -116,7 +116,7 @@ const Bookings = {
       // }
       return res.status(201).json({
         status: 'success',
-        data: rows,
+        data: rows[0];
       });
     } catch (error) {
       return res.status(400).json({
