@@ -56,19 +56,10 @@ const Trip = {
         });
       }
       const { rows } = await db.query(create_trip_query, values);
-      const { trip_id } = rows[0];
-      const id = trip_id;
+      rows[0].id = rows[0].trip_id;
       return res.status(201).json({
         status: 'success',
-        data: {
-          id,
-          bus_id,
-          origin,
-          destination,
-          trip_date,
-          fare,
-          status,
-        },
+        data: rows[0],
       });
     } catch (error) {
       if (error.routine === 'ri_ReportViolation') {
