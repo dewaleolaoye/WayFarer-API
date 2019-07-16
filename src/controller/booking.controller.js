@@ -108,13 +108,13 @@ const Bookings = {
   async get_user_booking(req, res) {
     try {
       const { rows } = await db.query(get_all_user_booking_query, [req.user]);
-      if (!rows[0]) {
-        return res.status(404).json({
-          status: 'error',
-          error: 'Booking not found',
-        });
-      }
-      return res.status(200).json({
+      // if (!rows[0]) {
+      //   return res.status(404).json({
+      //     status: 'error',
+      //     error: 'Booking not found',
+      //   });
+      // }
+      return res.status(201).json({
         status: 'success',
         data: rows,
       });
