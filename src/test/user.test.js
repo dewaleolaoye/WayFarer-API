@@ -26,7 +26,7 @@ describe(`POST ${signupUrl}`, () => {
     chai
       .request(app)
       .post(signupUrl)
-      .send(correctUser)
+      .json(correctUser)
       .end((err, res) => {
         console.log(res.status);
         console.log(res.body);
@@ -50,7 +50,7 @@ describe(`POST ${signupUrl}`, () => {
 //     chai
 //       .request(app)
 //       .post(signinUrl)
-//       .send(correctUser)
+//       .json(correctUser)
 //       .end((err, res) => {
 //         const { body } = res;
 //         expect(res.status).to.be.equal(201);

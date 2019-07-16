@@ -22,7 +22,7 @@ const User = {
     let { is_admin } = req.body;
 
     if (!first_name || !last_name || !email || !password) {
-      return res.status(400).send({
+      return res.status(400).json({
         status: 'error',
         error: 'All fields are required',
       });
@@ -32,7 +32,7 @@ const User = {
     !is_admin ? is_admin = false : true;
 
     if (!validate.isValidEmail(email)) {
-      return res.status(400).send({
+      return res.status(400).json({
         status: 'error',
         error: 'Please enter a valid email address',
       });
@@ -97,14 +97,14 @@ const User = {
   */
   async login(req, res) {
     if (!req.body.email || !req.body.password) {
-      return res.status(400).send({
+      return res.status(400).json({
         status: 'error',
         error: 'Some values are missing',
       });
     }
 
     if (!Helper.isValidEmail(req.body.email)) {
-      return res.status(400).send({
+      return res.status(400).json({
         status: 'error',
         error: 'Please enter a valid email address',
       });
@@ -113,7 +113,7 @@ const User = {
     try {
       const { rows } = await db.query(login_user, [req.body.email]);
       if (!rows[0]) {
-        res.status(401).send({
+        res.status(401).json({
           status: 'error',
           error: 'Some values are missing',
         });
@@ -142,7 +142,7 @@ const User = {
         },
       });
     } catch (error) {
-      return res.status(401).send({
+      return res.status(401).json({
         status: 'error',
         error: 'The credentials you provided is incorrect',
       });
