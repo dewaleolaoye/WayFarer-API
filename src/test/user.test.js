@@ -26,15 +26,12 @@ describe(`POST ${signupUrl}`, () => {
     chai
       .request(app)
       .post(signupUrl)
-      .json(correctUser)
+      .send(correctUser)
       .end((err, res) => {
-        console.log(res.status);
-        console.log(res.body);
         const { body } = res;
         expect(res.status).to.equal(201);
         expect(body).to.be.an('object');
         expect(res.status).to.be.a('number');
-        expect(body.data).to.be.an('object');
         expect(body.data).to.be.have.property('token');
         expect(body.data).to.be.have.property('first_name');
         expect(body.data).to.be.have.property('last_name');
@@ -50,7 +47,7 @@ describe(`POST ${signupUrl}`, () => {
 //     chai
 //       .request(app)
 //       .post(signinUrl)
-//       .json(correctUser)
+//       .send(correctUser)
 //       .end((err, res) => {
 //         const { body } = res;
 //         expect(res.status).to.be.equal(201);
