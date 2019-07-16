@@ -57,6 +57,7 @@ const Trip = {
       }
       const { rows } = await db.query(create_trip_query, values);
       rows[0].id = rows[0].trip_id;
+      delete rows[0].trip_id;
       return res.status(201).json({
         status: 'success',
         data: rows[0],
