@@ -17,6 +17,7 @@ const Trip = {
   * @returns {object} bus object
   */
   async create_trip(req, res) {
+    // console.log(req);
     if (req.admin === false) {
       return res.status(403).json({
         status: 'error',
@@ -28,10 +29,10 @@ const Trip = {
     // eslint-disable-next-line prefer-const
     let { status } = req.body;
 
-    if (status === null || status === 'undefined') {
-      const newStatus = 'active';
-      return newStatus;
-    }
+    // if (status === null || status === 'undefined') {
+    //   const newStatus = 'active';
+    //   return newStatus;
+    // }
 
     const values = [
       bus_id,
