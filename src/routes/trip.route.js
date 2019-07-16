@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post('/trips', Authentication.verify_token, Trip.create_trip);
 router.get('/trips', Authentication.verify_token, Trip.getAllTrips);
-router.patch('/trips/:trip_id', Authentication.verify_token, Trip.cancelATrip);
+router.patch('/trips/:id', Authentication.verify_token, Trip.cancelATrip);
 
 export default router;
