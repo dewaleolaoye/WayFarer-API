@@ -124,7 +124,7 @@ const Trip = {
       const values = [
         'canceled',
         new Date(),
-        req.params.trip_id,
+        req.params.id,
       ];
 
       const { rows } = await db.query(cancel_a_trip_query, values);

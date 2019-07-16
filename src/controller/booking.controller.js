@@ -131,7 +131,7 @@ const Bookings = {
  */
   async deleteBooking(req, res) {
     try {
-      const { rows } = await db.query(delete_booking, [req.params.booking_id, req.user]);
+      const { rows } = await db.query(delete_booking, [req.params.id, req.user]);
       if (!rows[0]) {
         return res.status(404).json({
           status: 'error',
