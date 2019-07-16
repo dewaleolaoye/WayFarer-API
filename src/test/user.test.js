@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-undef */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
@@ -27,10 +28,13 @@ describe(`POST ${signupUrl}`, () => {
       .post(signupUrl)
       .send(correctUser)
       .end((err, res) => {
+        console.log(res.status);
+        console.log(res.body);
         const { body } = res;
         expect(res.status).to.equal(201);
-        expect(res.status).to.be.a('number');
         expect(body).to.be.an('object');
+        expect(res.status).to.be.a('number');
+        expect(body.data).to.be.an('object');
         expect(body.data).to.be.have.property('token');
         expect(body.data).to.be.have.property('first_name');
         expect(body.data).to.be.have.property('last_name');
