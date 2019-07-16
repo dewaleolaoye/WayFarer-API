@@ -97,7 +97,7 @@ const User = {
   */
   async login(req, res) {
     // eslint-disable-next-line no-console
-    console.log(req);
+    // console.log(req.headers);
     if (!req.body.email || !req.body.password) {
       return res.status(400).json({
         status: 'error',
@@ -105,7 +105,7 @@ const User = {
       });
     }
 
-    if (!Helper.isValidEmail(req.body.email)) {
+    if (!validate.isValidEmail(req.body.email)) {
       return res.status(400).json({
         status: 'error',
         error: 'Please enter a valid email address',
