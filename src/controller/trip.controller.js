@@ -3,7 +3,7 @@ import db from '../model/db';
 
 import {
   create_trip_query,
-  bus_availability,
+  // bus_availability,
   get_all_trip_query,
   cancel_a_trip_query,
 } from '../model/trip.model';
@@ -17,7 +17,7 @@ const Trip = {
   * @returns {object} bus object
   */
   async create_trip(req, res) {
-    console.log(res);
+    // console.log(res);
     // console.log(req.admin);
     if (req.admin === false) {
       return res.status(403).json({

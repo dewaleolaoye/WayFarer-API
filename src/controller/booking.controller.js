@@ -47,10 +47,10 @@ const Bookings = {
           error: 'You already booked a seat for the trip',
         });
       }
-      const id = rows[0].trip_id;
+
       const values = [
         req.user,
-        id,
+        trip_id,
         moment(new Date()),
         rows[0].bus_id,
         rows[0].trip_date,
@@ -108,15 +108,15 @@ const Bookings = {
   async get_user_booking(req, res) {
     try {
       const { rows } = await db.query(get_all_user_booking_query, [req.user]);
-      // if (!rows[0]) {
-      //   return res.status(404).json({
-      //     status: 'error',
-      //     error: 'Booking not found',
-      //   });
-      // }
-      return res.status(201).json({
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Booking not found',
+        });
+      }
+      return res.status(200).json({
         status: 'success',
-        data: rows[0];
+        data: rows,
       });
     } catch (error) {
       return res.status(400).json({
@@ -131,7 +131,7 @@ const Bookings = {
  */
   async deleteBooking(req, res) {
     try {
-      const { rows } = await db.query(delete_booking, [req.params.id, req.user]);
+      const { rows } = await db.query(delete_booking, [req.params.booking_id, req.user]);
       if (!rows[0]) {
         return res.status(404).json({
           status: 'error',
