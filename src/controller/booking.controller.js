@@ -47,10 +47,10 @@ const Bookings = {
           error: 'You already booked a seat for the trip',
         });
       }
-
+      const id = rows[0].trip_id;
       const values = [
         req.user,
-        trip_id,
+        id,
         moment(new Date()),
         rows[0].bus_id,
         rows[0].trip_date,

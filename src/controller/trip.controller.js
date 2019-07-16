@@ -48,13 +48,13 @@ const Trip = {
 
     try {
       // check if bus is available
-      const bus = await db.query(bus_availability, [trip_date, bus_id, 'active']);
-      if (bus.rows[0]) {
-        return res.status(409).json({
-          status: 'error',
-          error: 'The bus has been schedule for another trip on the same date',
-        });
-      }
+      // const bus = await db.query(bus_availability, [trip_date, bus_id, 'active']);
+      // if (bus.rows[0]) {
+      //   return res.status(409).json({
+      //     status: 'error',
+      //     error: 'The bus has been schedule for another trip on the same date',
+      //   });
+      // }
       const { rows } = await db.query(create_trip_query, values);
       rows[0].id = rows[0].trip_id;
       delete rows[0].trip_id;
@@ -63,19 +63,19 @@ const Trip = {
         data: rows[0],
       });
     } catch (error) {
-      if (error.routine === 'ri_ReportViolation') {
-        return res.status(400).json({
-          status: 'error',
-          error: 'No bus with such ID found',
-        });
-      }
+      // if (error.routine === 'ri_ReportViolation') {
+      //   return res.status(400).json({
+      //     status: 'error',
+      //     error: 'No bus with such ID found',
+      //   });
+      // }
 
-      if (error.routine === '_bt_check_unique') {
-        return res.status(400).json({
-          status: 'error',
-          error: 'Bus is Active, please use another',
-        });
-      }
+      // if (error.routine === '_bt_check_unique') {
+      //   return res.status(400).json({
+      //     status: 'error',
+      //     error: 'Bus is Active, please use another',
+      //   });
+      // }
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, try again or contact our engineers',
