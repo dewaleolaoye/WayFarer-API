@@ -59,7 +59,7 @@ const Trip = {
       rows[0].id = rows[0].trip_id;
       delete rows[0].trip_id;
       return res.status(201).json({
-        status: '201',
+        status: 'success',
         data: rows[0],
       });
     } catch (error) {
