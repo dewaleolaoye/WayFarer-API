@@ -29,7 +29,7 @@ const Authentication = {
    */
 
   async verify_token(req, res, next) {
-    const { token } = req.headers || req.headers.token;
+    const { token } = req.headers.token || req.body.token;
     try {
       // verify user provided token
       const decoded = await jwt.verify(token, process.env.SECRET);
@@ -53,7 +53,7 @@ const Authentication = {
       if (error.name === 'tokenExpiredError') {
         return res.status(401).json({
           status: 'error',
-          error: 'Token Expired, request for a new one',
+          error: 'Token Expired, please login again',
         });
       }
       return res.status(400).json({
