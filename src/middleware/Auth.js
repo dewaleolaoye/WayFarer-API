@@ -29,12 +29,12 @@ const Authentication = {
    */
 
   async verify_token(req, res, next) {
-    const { token } = req.headers.token || req.body.token;
+    const { token } = req.headers || req.headers.token;
     try {
       // verify user provided token
       const decoded = await jwt.verify(token, process.env.SECRET);
       const text = 'SELECT * FROM users WHERE user_id = $1';
-      const { rows } = await db.query(text, [decoded.user_id], [decoded.is_admin]);
+      const { rows } = await db.query(text, [decoded.user_id]);
 
       // check valid users
       if (!rows[0]) {
@@ -45,7 +45,7 @@ const Authentication = {
       }
 
       req.user = decoded.user_id;
-      req.admin = decoded.is_admin;
+      // req.admin = decoded.is_admin;
 
       return next();
     } catch (error) {
