@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { log } from 'util';
 import db from '../model/db';
 
 const Authentication = {
@@ -29,7 +28,7 @@ const Authentication = {
    */
 
   async verify_token(req, res, next) {
-    const { token } = req.headers || req.headers.token;
+    const { token } = req.body.token || req.headers.token;
     try {
       // verify user provided token
       const decoded = await jwt.verify(token, process.env.SECRET);
@@ -49,7 +48,6 @@ const Authentication = {
 
       return next();
     } catch (error) {
-      log(error);
       // eslint-disable-next-line no-cond-assign
       if (error.name === 'tokenExpiredError') {
         return res.status(401).json({

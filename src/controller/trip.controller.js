@@ -59,24 +59,23 @@ const Trip = {
       rows[0].id = rows[0].trip_id;
       delete rows[0].trip_id;
       return res.status(201).json({
-        status: '201',
+        status: 'success',
         data: rows[0],
       });
     } catch (error) {
-      // console.log(error)
-      // if (error.routine === 'ri_ReportViolation') {
-      //   return res.status(400).json({
-      //     status: 'error',
-      //     error: 'No bus with such ID found',
-      //   });
-      // }
+      if (error.routine === 'ri_ReportViolation') {
+        return res.status(400).json({
+          status: 'error',
+          error: 'No bus with such ID found',
+        });
+      }
 
-      // if (error.routine === '_bt_check_unique') {
-      //   return res.status(400).json({
-      //     status: 'error',
-      //     error: 'Bus is Active, please use another',
-      //   });
-      // }
+      if (error.routine === '_bt_check_unique') {
+        return res.status(400).json({
+          status: 'error',
+          error: 'Bus is Active, please use another',
+        });
+      }
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, try again or contact our engineers',
