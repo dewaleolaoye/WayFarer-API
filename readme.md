@@ -80,7 +80,7 @@ npm run test
 ## API
 
 The API is currently in version 1 (v1) and is hosted at
-https://enigmatic-wave-60222.herokuapp.com/
+
 [https://enigmatic-wave-60222.herokuapp.com/](https://enigmatic-wave-60222.herokuapp.com/)
 
 ## Author
