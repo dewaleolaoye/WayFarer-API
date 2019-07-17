@@ -3,7 +3,7 @@ import db from '../model/db';
 
 import {
   create_trip_query,
-  // bus_availability,
+  bus_availability,
   get_all_trip_query,
   cancel_a_trip_query,
 } from '../model/trip.model';
@@ -48,21 +48,22 @@ const Trip = {
 
     try {
       // check if bus is available
-      // const bus = await db.query(bus_availability, [trip_date, bus_id, 'active']);
-      // if (bus.rows[0]) {
-      //   return res.status(409).json({
-      //     status: 'error',
-      //     error: 'The bus has been schedule for another trip on the same date',
-      //   });
-      // }
+      const bus = await db.query(bus_availability, [trip_date, bus_id, 'active']);
+      if (bus.rows[0]) {
+        return res.status(409).json({
+          status: 'error',
+          error: 'The bus has been schedule for another trip on the same date',
+        });
+      }
       const { rows } = await db.query(create_trip_query, values);
       rows[0].id = rows[0].trip_id;
       delete rows[0].trip_id;
       return res.status(201).json({
-        status: 'success',
+        status: '201',
         data: rows[0],
       });
     } catch (error) {
+      // console.log(error)
       // if (error.routine === 'ri_ReportViolation') {
       //   return res.status(400).json({
       //     status: 'error',
