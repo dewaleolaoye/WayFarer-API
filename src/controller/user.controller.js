@@ -61,7 +61,7 @@ const User = {
       const { rows } = await db.query(create_user, values);
       // eslint-disable-next-line no-shadow
       const { user_id } = rows[0];
-      const token = Authentication.generate_token(rows[0].user_id, is_admin, email);
+      const token = Authentication.generate_token(rows[0].user_id, rows[0].is_admin, rows[0].email);
 
       return res.status(201).json({
         status: 'success',

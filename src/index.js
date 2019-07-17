@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 // import Debug from 'debug';
 import cors from 'cors';
-import user from './routes/user.route';
+import User from './routes/user.route';
 import Trip from './routes/trip.route';
 import Bus from './routes/bus.route';
 import Booking from './routes/booking.route';
@@ -15,7 +15,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/api/v1/auth', user);
+app.use('/api/v1/', User);
 app.use('/api/v1/', Trip);
 app.use('/api/v1/', Bus);
 app.use('/api/v1', Booking);
