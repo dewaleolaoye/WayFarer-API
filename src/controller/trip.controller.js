@@ -26,41 +26,59 @@ const Trip = {
       });
     }
     // eslint-disable-next-line object-curly-newline
-    const { bus_id, origin, destination, trip_date, fare } = req.body;
+    // const { bus_id, origin, destination, trip_date, fare } = req.body;
     // eslint-disable-next-line prefer-const
-    let { status } = req.body;
+    // let { status } = req.body;
 
-    if (status === null || status === 'undefined') {
-      const newStatus = 'active';
-      return newStatus;
-    }
+    // if (status === null || status === 'undefined') {
+    //   const newStatus = 'active';
+    //   return newStatus;
+    // }
 
     const values = [
-      bus_id,
+      req.body.bus_id,
       new Date(),
-      origin,
-      destination,
-      trip_date,
-      fare,
+      req.body.origin,
+      req.body.destination,
+      req.body.trip_date,
+      req.body.fare,
       'active',
       new Date(),
     ];
 
     try {
       // check if bus is available
-      const bus = await db.query(bus_availability, [trip_date, bus_id, 'active']);
+      const bus = await db.query(bus_availability, [req.body.trip_date, req.body.bus_id, 'active']);
       if (bus.rows[0]) {
         return res.status(409).json({
           status: 'error',
           error: 'The bus has been schedule for another trip on the same date',
         });
       }
+      // const { rows } = await db.query(create_trip_query, values);
+      // rows[0].id = rows[0].trip_id;
+      // delete rows[0].trip_id;
+      // return res.status(201).json({
+      //   status: 'success',
+      //   data: rows[0],
+      // });
       const { rows } = await db.query(create_trip_query, values);
-      rows[0].id = rows[0].trip_id;
-      delete rows[0].trip_id;
+      const {
+        trip_id, bus_id, origin,
+        destination, trip_date, fare, status,
+      } = rows[0];
+      const id = trip_id;
       return res.status(201).json({
         status: 'success',
-        data: rows[0],
+        data: {
+          id,
+          bus_id,
+          origin,
+          destination,
+          trip_date,
+          fare,
+          status,
+        },
       });
     } catch (error) {
       if (error.routine === 'ri_ReportViolation') {
