@@ -3,7 +3,7 @@ import db from '../model/db';
 
 import {
   create_trip_query,
-  bus_availability,
+  // bus_availability,
   get_all_trip_query,
   cancel_a_trip_query,
 } from '../model/trip.model';
@@ -17,7 +17,8 @@ const Trip = {
   * @returns {object} bus object
   */
   async create_trip(req, res) {
-    // console.log(res);
+    // eslint-disable-next-line no-console
+    console.log(req);
     // console.log(req.admin);
     // if (req.admin === false) {
     //   return res.status(403).json({
@@ -48,13 +49,14 @@ const Trip = {
 
     try {
       // check if bus is available
-      const bus = await db.query(bus_availability, [req.body.trip_date, req.body.bus_id, 'active']);
-      if (bus.rows[0]) {
-        return res.status(409).json({
-          status: 'error',
-          error: 'The bus has been schedule for another trip on the same date',
-        });
-      }
+      // eslint-disable-next-line max-len
+      // const bus = await db.query(bus_availability, [req.body.trip_date, req.body.bus_id, 'active']);
+      // if (bus.rows[0]) {
+      //   return res.status(409).json({
+      //     status: 'error',
+      //     error: 'The bus has been schedule for another trip on the same date',
+      //   });
+      // }
       const { rows } = await db.query(create_trip_query, values);
       const {
         trip_id, bus_id, origin,
@@ -74,12 +76,12 @@ const Trip = {
         },
       });
     } catch (error) {
-      if (error.routine === 'ri_ReportViolation') {
-        return res.status(400).json({
-          status: 'error',
-          error: 'No bus with such ID found',
-        });
-      }
+      // if (error.routine === 'ri_ReportViolation') {
+      //   return res.status(400).json({
+      //     status: 'error',
+      //     error: 'No bus with such ID found',
+      //   });
+      // }
 
       // if (error.routine === '_bt_check_unique') {
       //   return res.status(400).json({
