@@ -17,38 +17,38 @@ const Trip = {
   * @returns {object} bus object
   */
   async create_trip(req, res) {
-    // console.log(res);
-    // console.log(req.admin);
-    // if (req.admin === false) {
-    //   return res.status(403).json({
-    //     status: 'error',
-    //     error: 'Unauthorized!',
-    //   });
-    // }
+    // eslint-disable-next-line no-console
+    if (!req.admin) {
+      return res.status(403).json({
+        status: 'error',
+        error: 'Unauthorized!',
+      });
+    }
     // eslint-disable-next-line object-curly-newline
-    // const { bus_id, origin, destination, trip_date, fare } = req.body;
+    const { bus_id, origin, destination, trip_date, fare } = req.body;
     // eslint-disable-next-line prefer-const
-    // let { status } = req.body;
+    let { status } = req.body;
 
-    // if (status === null || status === 'undefined') {
-    //   const newStatus = 'active';
-    //   return newStatus;
-    // }
+    if (status === null || status === 'undefined') {
+      const newStatus = 'active';
+      return newStatus;
+    }
 
     const values = [
-      req.body.bus_id,
+      bus_id,
       new Date(),
-      req.body.origin,
-      req.body.destination,
-      req.body.trip_date,
-      req.body.fare,
+      origin,
+      destination,
+      trip_date,
+      fare,
       'active',
       new Date(),
     ];
 
     try {
       // check if bus is available
-      const bus = await db.query(bus_availability, [req.body.trip_date, req.body.bus_id, 'active']);
+      // eslint-disable-next-line max-len
+      const bus = await db.query(bus_availability, [trip_date, bus_id, 'active']);
       if (bus.rows[0]) {
         return res.status(409).json({
           status: 'error',
@@ -56,10 +56,7 @@ const Trip = {
         });
       }
       const { rows } = await db.query(create_trip_query, values);
-      const {
-        trip_id, bus_id, origin,
-        destination, trip_date, fare, status,
-      } = rows[0];
+      const { trip_id } = rows[0];
       const id = trip_id;
       return res.status(201).json({
         status: 'success',
@@ -74,6 +71,7 @@ const Trip = {
         },
       });
     } catch (error) {
+      console.log(error);
       if (error.routine === 'ri_ReportViolation') {
         return res.status(400).json({
           status: 'error',
@@ -81,12 +79,12 @@ const Trip = {
         });
       }
 
-      // if (error.routine === '_bt_check_unique') {
-      //   return res.status(400).json({
-      //     status: 'error',
-      //     error: 'Bus is Active, please use another',
-      //   });
-      // }
+      if (error.routine === '_bt_check_unique') {
+        return res.status(400).json({
+          status: 'error',
+          error: 'Bus is Active, please use another',
+        });
+      }
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, try again or contact our engineers',

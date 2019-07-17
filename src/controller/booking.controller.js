@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 import moment from 'moment';
 import db from '../model/db';
@@ -77,11 +76,12 @@ const Bookings = {
    * @param {*} req
    * @param {*} res
   */
+  // eslint-disable-next-line consistent-return
   async get_all_admin_booking(req, res) {
     if (!req.admin) {
       res.status(400).json({
         status: 'error',
-        error: 'Unauthorized',
+        error: 'Unauthorized routerrrr',
       });
     }
     try {
@@ -106,6 +106,7 @@ const Bookings = {
   },
 
   async get_user_booking(req, res) {
+    console.log(req.user);
     try {
       const { rows } = await db.query(get_all_user_booking_query, [req.user]);
       if (!rows[0]) {
