@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+
 import db from '../model/db';
 
 const Authentication = {
@@ -28,7 +29,7 @@ const Authentication = {
    */
 
   async verify_token(req, res, next) {
-    const { token } = req.body.token || req.headers.token;
+    const { token } = req.headers || req.headers.token;
     try {
       // verify user provided token
       const decoded = await jwt.verify(token, process.env.SECRET);
