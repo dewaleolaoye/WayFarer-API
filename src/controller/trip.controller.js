@@ -19,12 +19,12 @@ const Trip = {
   async create_trip(req, res) {
     // console.log(res);
     // console.log(req.admin);
-    if (req.admin === false) {
-      return res.status(403).json({
-        status: 'error',
-        error: 'Unauthorized!',
-      });
-    }
+    // if (req.admin === false) {
+    //   return res.status(403).json({
+    //     status: 'error',
+    //     error: 'Unauthorized!',
+    //   });
+    // }
     // eslint-disable-next-line object-curly-newline
     // const { bus_id, origin, destination, trip_date, fare } = req.body;
     // eslint-disable-next-line prefer-const
@@ -55,13 +55,6 @@ const Trip = {
           error: 'The bus has been schedule for another trip on the same date',
         });
       }
-      // const { rows } = await db.query(create_trip_query, values);
-      // rows[0].id = rows[0].trip_id;
-      // delete rows[0].trip_id;
-      // return res.status(201).json({
-      //   status: 'success',
-      //   data: rows[0],
-      // });
       const { rows } = await db.query(create_trip_query, values);
       const {
         trip_id, bus_id, origin,
@@ -88,12 +81,12 @@ const Trip = {
         });
       }
 
-      if (error.routine === '_bt_check_unique') {
-        return res.status(400).json({
-          status: 'error',
-          error: 'Bus is Active, please use another',
-        });
-      }
+      // if (error.routine === '_bt_check_unique') {
+      //   return res.status(400).json({
+      //     status: 'error',
+      //     error: 'Bus is Active, please use another',
+      //   });
+      // }
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, try again or contact our engineers',
