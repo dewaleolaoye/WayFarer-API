@@ -31,9 +31,10 @@ app.get('/', (req, res) => {
   );
 });
 
+// eslint-disable-next-line consistent-return
 app.use((err, req, res, next) => {
   if (err) {
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       error: 'Internal server error',
     });
@@ -41,6 +42,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
+// handle route error
 app.use((req, res) => {
   res.status(404).json({
     status: 'error',
