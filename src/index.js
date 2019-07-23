@@ -23,12 +23,29 @@ app.use('/api/v1', Booking);
 app.get('/', (req, res) => {
   res.status(200).json(
     {
-      status: 200,
+      status: 'success',
       data: [{
         message: 'Welcome to WayFare API Home Route',
       }],
     },
   );
+});
+
+app.use((err, req, res, next) => {
+  if (err) {
+    res.status(500).json({
+      status: 'error',
+      error: 'Internal server error',
+    });
+  }
+  next();
+});
+
+app.use((req, res) => {
+  res.status(404).json({
+    status: 'error',
+    error: 'Page not found',
+  });
 });
 
 const port = process.env.PORT || 5000;
