@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-import moment from 'moment';
 import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
@@ -8,7 +7,7 @@ import CheckForValidInput from '../helper/validate';
 
 const User = {
   /**
-   * Create A User
+   * User signup
    * @param {object} req
    * @param {object} res
    * @returns {object} user object
@@ -16,8 +15,12 @@ const User = {
 
   async create(req, res) {
     const {
-      first_name, last_name, email, is_admin,
+      first_name, last_name, email,
     } = req.body;
+
+    let { is_admin } = req.body;
+    // eslint-disable-next-line no-unused-expressions
+    !is_admin ? is_admin = false : true;
 
     const { error } = CheckForValidInput.createUser(req.body);
     if (error) {
@@ -33,9 +36,9 @@ const User = {
       last_name,
       email,
       hash_password,
-      moment(new Date()),
-      moment(new Date()),
-      false,
+      new Date(),
+      new Date(),
+      is_admin,
     ];
 
     try {
@@ -56,6 +59,7 @@ const User = {
         },
       });
     } catch (err) {
+      // console.log(err);
       // check if email already exist
       if (err.routine === '_bt_check_unique') {
         return res.status(409).json({
