@@ -13,7 +13,7 @@ const User = {
    * @returns {object} user object
    */
 
-  async create(req, res) {
+  async sign_up(req, res) {
     const {
       first_name, last_name, email,
     } = req.body;
@@ -24,7 +24,7 @@ const User = {
 
     const { error } = CheckForValidInput.createUser(req.body);
     if (error) {
-      return res.status(400).json({
+      return res.status(422).json({
         status: 'error',
         error: error.details[0].message,
       });
@@ -43,7 +43,6 @@ const User = {
 
     try {
       const { rows } = await db.query(create_user, values);
-      // eslint-disable-next-line no-shadow
       const { user_id } = rows[0];
       const token = Authentication.generate_token(rows[0].user_id, rows[0].is_admin, rows[0].email);
 
@@ -59,7 +58,6 @@ const User = {
         },
       });
     } catch (err) {
-      // console.log(err);
       // check if email already exist
       if (err.routine === '_bt_check_unique') {
         return res.status(409).json({
@@ -69,7 +67,7 @@ const User = {
       }
       return res.status(500).json({
         status: 'error',
-        error: 'Oops! Something went wrong, try again',
+        error: 'Oops! Something went wrong, please try again',
       });
     }
   },
@@ -81,32 +79,24 @@ const User = {
   * @returns {object} user object
   */
   async login(req, res) {
-    // eslint-disable-next-line no-console
-    if (!req.body.email || !req.body.password) {
-      return res.status(400).json({
+    const { error } = CheckForValidInput.login(req.body);
+    if (error) {
+      return res.status(422).json({
         status: 'error',
-        error: 'Some values are missing',
+        error: error.details[0].message,
       });
     }
-
-    // if (!validate.isValidEmail(req.body.email)) {
-    //   return res.status(400).json({
-    //     status: 'error',
-    //     error: 'Please enter a valid email address',
-    //   });
-    // }
-
     try {
       const { rows } = await db.query(login_user, [req.body.email]);
       if (!rows[0]) {
-        res.status(401).json({
+        return res.status(404).json({
           status: 'error',
-          error: 'Some values are missing',
+          error: 'User not found',
         });
       }
-
+      // console.log(req.body.password);
       if (!Helper.compare_password(rows[0].password, req.body.password)) {
-        res.status(400).json({
+        return res.status(400).json({
           status: 'error',
           error: 'Email or Password not correct',
         });
@@ -116,7 +106,7 @@ const User = {
         user_id, first_name, email, is_admin,
       } = rows[0];
       // generate token
-      const token = Authentication.generate_token(rows[0].user_id, is_admin, email);
+      const token = Authentication.generate_token(rows[0].user_id, rows[0].is_admin, rows[0].email);
       return res.status(201).json({
         status: 'success',
         data: {
@@ -127,10 +117,11 @@ const User = {
           token,
         },
       });
-    } catch (error) {
-      return res.status(401).json({
+    } catch (err) {
+      // console.log(err)
+      return res.status(500).json({
         status: 'error',
-        error: 'The credentials you provided is incorrect',
+        error: 'Ooops! Something went wrong, please try again',
       });
     }
   },

@@ -30,6 +30,18 @@ class CheckForValidInput {
     });
     return Joi.validate(user, schema, validationOptions);
   }
+
+  static login(login_details) {
+    const schema = Joi.object().keys({
+      email: Joi.string().trim().strict().email()
+        .required()
+        .error(() => 'Please input valid email'),
+      password: Joi.string().trim().strict().regex(/^\w{6,}/)
+        .required()
+        .error(() => 'Password not correct'),
+    });
+    return Joi.validate(login_details, schema, validationOptions);
+  }
 }
 
 export default CheckForValidInput;
