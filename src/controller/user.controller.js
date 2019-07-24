@@ -3,9 +3,8 @@ import moment from 'moment';
 import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
-import validate from '../helper/validate';
 import { create_user, login_user } from '../model/user.model';
-
+import CheckForValidInput from '../helper/validate';
 
 const User = {
   /**
@@ -17,34 +16,16 @@ const User = {
 
   async create(req, res) {
     const {
-      first_name, last_name, email, password,
+      first_name, last_name, email, is_admin,
     } = req.body;
-    let { is_admin } = req.body;
 
-    if (!first_name || !last_name || !email || !password) {
+    const { error } = CheckForValidInput.createUser(req.body);
+    if (error) {
       return res.status(400).json({
         status: 'error',
-        error: 'All fields are required',
+        error: error.details[0].message,
       });
     }
-
-    // eslint-disable-next-line no-unused-expressions
-    !is_admin ? is_admin = false : true;
-
-    if (!validate.isValidEmail(email)) {
-      return res.status(400).json({
-        status: 'error',
-        error: 'Please enter a valid email address',
-      });
-    }
-
-    if (validate.passwordLength(password)) {
-      return res.status(400).json({
-        status: 'error',
-        error: 'Password length too short',
-      });
-    }
-
     const hash_password = Helper.hash_password(req.body.password);
 
     const values = [
@@ -54,7 +35,7 @@ const User = {
       hash_password,
       moment(new Date()),
       moment(new Date()),
-      is_admin,
+      false,
     ];
 
     try {
@@ -74,9 +55,9 @@ const User = {
           token,
         },
       });
-    } catch (error) {
+    } catch (err) {
       // check if email already exist
-      if (error.routine === '_bt_check_unique') {
+      if (err.routine === '_bt_check_unique') {
         return res.status(409).json({
           status: 'error',
           error: 'User with the email already exist',
@@ -104,12 +85,12 @@ const User = {
       });
     }
 
-    if (!validate.isValidEmail(req.body.email)) {
-      return res.status(400).json({
-        status: 'error',
-        error: 'Please enter a valid email address',
-      });
-    }
+    // if (!validate.isValidEmail(req.body.email)) {
+    //   return res.status(400).json({
+    //     status: 'error',
+    //     error: 'Please enter a valid email address',
+    //   });
+    // }
 
     try {
       const { rows } = await db.query(login_user, [req.body.email]);
