@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import db from '../model/db';
 import { create_bus_query, get_all_bus_query } from '../model/bus.model';
+import check_valid_input from '../helper/validate';
 
 const Bus = {
   /**
@@ -15,13 +16,14 @@ const Bus = {
       number_plate, manufacturer, model, year, capacity,
     } = req.body;
 
-
-    if (!number_plate || !capacity) {
-      return res.status(400).json({
+    const { error } = check_valid_input.add_bus(req.body);
+    if (error) {
+      return res.status(422).json({
         status: 'error',
-        error: 'Plate Number and Capacity is reaquired',
+        error: error.details[0].message,
       });
     }
+
     const values = [
       number_plate,
       manufacturer,

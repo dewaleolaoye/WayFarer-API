@@ -3,7 +3,7 @@ import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
 import { create_user, login_user } from '../model/user.model';
-import CheckForValidInput from '../helper/validate';
+import check_valid_input from '../helper/validate';
 
 const User = {
   /**
@@ -22,7 +22,7 @@ const User = {
     // eslint-disable-next-line no-unused-expressions
     !is_admin ? is_admin = false : true;
 
-    const { error } = CheckForValidInput.createUser(req.body);
+    const { error } = check_valid_input.createUser(req.body);
     if (error) {
       return res.status(422).json({
         status: 'error',
@@ -79,7 +79,7 @@ const User = {
   * @returns {object} user object
   */
   async login(req, res) {
-    const { error } = CheckForValidInput.login(req.body);
+    const { error } = check_valid_input.login(req.body);
     if (error) {
       return res.status(422).json({
         status: 'error',

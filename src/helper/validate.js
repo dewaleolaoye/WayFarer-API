@@ -6,11 +6,11 @@ const validationOptions = {
   stripUnknown: true, // remove unknown keys from the validated data
 };
 
-class CheckForValidInput {
+class check_valid_input {
   /**
-   * check user input during sign_up
+   * check user input for sign_up
    * @param {user} object
-   */
+  */
   static createUser(user) {
     const schema = Joi.object().keys({
       first_name: Joi.string().trim().strict().regex(/^[a-zA-Z]+$/)
@@ -31,6 +31,11 @@ class CheckForValidInput {
     return Joi.validate(user, schema, validationOptions);
   }
 
+  /**
+    * check user input for login
+    * @param {user} object
+   */
+
   static login(login_details) {
     const schema = Joi.object().keys({
       email: Joi.string().trim().strict().email()
@@ -42,6 +47,28 @@ class CheckForValidInput {
     });
     return Joi.validate(login_details, schema, validationOptions);
   }
+
+  // number_plate, manufacturer, model, year, capacity,
+  static add_bus(details) {
+    const schema = Joi.object().keys({
+      number_plate: Joi.string().trim().strict().regex(/^\w/)
+        .required()
+        .error(() => 'Number plate is required'),
+      manufacturer: Joi.string().trim().strict().regex(/^\w/)
+        .required()
+        .error(() => 'Bus Manufacturer is required'),
+      model: Joi.string().trim().strict()
+        .required()
+        .error(() => 'Bus model is required'),
+      year: Joi.number().integer().min(1900).max(2030)
+        .required()
+        .error(() => 'Year is requrired with four digits'),
+      capacity: Joi.number().integer().min(2).max(9999)
+        .required()
+        .error(() => 'Capacity is required with values not more than 9999'),
+    });
+    return Joi.validate(details, schema, validationOptions);
+  }
 }
 
-export default CheckForValidInput;
+export default check_valid_input;
