@@ -69,6 +69,25 @@ class check_valid_input {
     });
     return Joi.validate(details, schema, validationOptions);
   }
+
+  static trip(trip_details) {
+    const schema = Joi.object().keys({
+      bus_id: Joi.number().integer()
+        .required()
+        .error(() => 'Bus ID is required'),
+      trip_date: Joi.string().strict().required()
+        .error(() => 'Please specify trip date'),
+      origin: Joi.string().strict().regex(/^\w/).required()
+        .error(() => 'Specify trip origin'),
+      destination: Joi.string().strict().regex(/^\w/)
+        .required()
+        .error(() => 'Specify trip destination'),
+      fare: Joi.number().min(1).max(9999)
+        .required()
+        .error(() => 'Specify trip fare'),
+    });
+    return Joi.validate(trip_details, schema, validationOptions);
+  }
 }
 
 export default check_valid_input;
