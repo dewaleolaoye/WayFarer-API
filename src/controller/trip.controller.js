@@ -18,7 +18,7 @@ const Trip = {
   */
   async create_trip(req, res) {
     // eslint-disable-next-line no-console
-    if (!req.admin) {
+    if (!req.user.is_admin) {
       return res.status(403).json({
         status: 'error',
         error: 'Unauthorized!',
@@ -71,7 +71,6 @@ const Trip = {
         },
       });
     } catch (error) {
-      console.log(error);
       if (error.routine === 'ri_ReportViolation') {
         return res.status(400).json({
           status: 'error',
@@ -115,7 +114,7 @@ const Trip = {
 
   async cancelATrip(req, res) {
     // check for admin user
-    if (req.admin === false) {
+    if (!req.user.is_admin) {
       return res.status(403).json({
         status: 'error',
         error: 'Unauthorized!',
@@ -147,7 +146,6 @@ const Trip = {
       });
     }
   },
-
 };
 
 export default Trip;

@@ -12,6 +12,13 @@ const Bus = {
 */
 
   async addBus(req, res) {
+    if (!req.user.is_admin) {
+      return res.status(403).json({
+        status: 'error',
+        error: 'Unauthorized!',
+      });
+    }
+
     const {
       number_plate, manufacturer, model, year, capacity,
     } = req.body;
@@ -33,12 +40,6 @@ const Bus = {
       new Date(),
     ];
     try {
-      if (!req.user.is_admin) {
-        return res.status(403).json({
-          status: 'error',
-          error: 'Unauthorized!',
-        });
-      }
       const { rows } = await db.query(create_bus_query, values);
       const { bus_id } = rows[0];
 

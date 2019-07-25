@@ -44,7 +44,6 @@ const Authentication = {
       }
 
       req.user = decoded;
-      // req.admin = decoded.is_admin;
 
       return next();
     } catch (error) {
