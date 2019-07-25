@@ -32,9 +32,8 @@ const Bus = {
       capacity,
       new Date(),
     ];
-
     try {
-      if (req.admin === false) {
+      if (!req.user.is_admin) {
         return res.status(403).json({
           status: 'error',
           error: 'Unauthorized!',
@@ -54,8 +53,8 @@ const Bus = {
           capacity,
         },
       });
-    } catch (error) {
-      if (error.routine === '_bt_check_unique') {
+    } catch (err) {
+      if (err.routine === '_bt_check_unique') {
         return res.status(409).json({
           status: 'error',
           error: 'Bus already exist',
@@ -76,19 +75,19 @@ const Bus = {
     */
   // eslint-disable-next-line consistent-return
   async getAllBus(req, res) {
+    if (!req.user.is_admin) {
+      return res.status(403).json({
+        status: 'error',
+        error: 'Unauthorized!',
+      });
+    }
     try {
-      if (req.admin === false) {
-        return res.status(403).json({
-          status: 'error',
-          error: 'Unauthorized!',
-        });
-      }
       const { rows } = await db.query(get_all_bus_query);
       return res.status(200).json({
         status: 'success',
         data: rows,
       });
-    } catch (error) {
+    } catch (err) {
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, contact our engineers',
