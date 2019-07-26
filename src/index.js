@@ -23,12 +23,31 @@ app.use('/api/v1', Booking);
 app.get('/', (req, res) => {
   res.status(200).json(
     {
-      status: 200,
+      status: 'success',
       data: [{
         message: 'Welcome to WayFare API Home Route',
       }],
     },
   );
+});
+
+// eslint-disable-next-line consistent-return
+app.use((err, req, res, next) => {
+  if (err) {
+    return res.status(400).json({
+      status: 'error',
+      error: 'Bad Request',
+    });
+  }
+  next();
+});
+
+// handle route error
+app.use((req, res) => {
+  res.status(404).json({
+    status: 'error',
+    error: 'Page not found',
+  });
 });
 
 const port = process.env.PORT || 5000;

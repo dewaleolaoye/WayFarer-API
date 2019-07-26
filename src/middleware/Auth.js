@@ -43,8 +43,7 @@ const Authentication = {
         });
       }
 
-      req.user = decoded.user_id;
-      req.admin = decoded.is_admin;
+      req.user = decoded;
 
       return next();
     } catch (error) {

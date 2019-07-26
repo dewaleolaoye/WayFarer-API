@@ -21,8 +21,8 @@ const createTable = () => {
     last_name VARCHAR(128) NOT NULL,
     email VARCHAR (254) UNIQUE NOT NULL,
     password VARCHAR(128) NOT NULL,
-    created_on TIMESTAMP DEFAULT Now(),
-    modified_on TIMESTAMP NOT NULL,
+    created_on DATE DEFAULT CURRENT_DATE,
+    modified_on DATE NOT NULL,
     is_admin BOOLEAN NOT NULL DEFAULT ('FALSE')
    )`;
 
@@ -42,11 +42,11 @@ const createTable = () => {
       bus_id SERIAL NOT NULL UNIQUE,
       origin VARCHAR(128) NOT NULL,
       destination VARCHAR(128) NOT NULL,
-      trip_date TIMESTAMP NOT NULL,
+      trip_date DATE NOT NULL,
       fare FLOAT(4) NOT NULL,
       status VARCHAR(64) NOT NULL,
-      created_on TIMESTAMP DEFAULT Now(),
-      modified_on TIMESTAMP NOT NULL,
+      created_on DATE DEFAULT CURRENT_DATE,
+      modified_on DATE NOT NULL,
       PRIMARY KEY (trip_id, bus_id),
       FOREIGN KEY (bus_id) REFERENCES bus(bus_id)
     )`;
@@ -68,7 +68,7 @@ const createTable = () => {
         model VARCHAR(128),
         year VARCHAR(128),
         capacity INTEGER NOT NULL,
-        created_on TIMESTAMP NOT NULL
+        created_on DATE NOT NULL
         )`;
 
   pool.query(Bus).then((res) => {
@@ -84,7 +84,7 @@ const createTable = () => {
       booking_id SERIAL PRIMARY KEY,
       user_id SERIAL NOT NULL,
       trip_id SERIAL NOT NULL,
-      created_on TIMESTAMP DEFAULT Now(),
+      created_on DATE DEFAULT CURRENT_DATE,
       bus_id SERIAL NOT NULL,
       trip_date TIMESTAMP NOT NULL,
       seat_number INT NOT NULL,

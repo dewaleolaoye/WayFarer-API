@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import db from '../model/db';
-
+import check_valid_input from '../helper/validate';
 import {
   create_trip_query,
   bus_availability,
@@ -18,12 +18,22 @@ const Trip = {
   */
   async create_trip(req, res) {
     // eslint-disable-next-line no-console
-    if (!req.admin) {
+    // console.log(req.user)
+    if (!req.user.is_admin) {
       return res.status(403).json({
         status: 'error',
         error: 'Unauthorized!',
       });
     }
+
+    const { error } = check_valid_input.trip(req.body);
+    if (error) {
+      return res.status(422).json({
+        status: 'error',
+        error: error.details[0].message,
+      });
+    }
+
     // eslint-disable-next-line object-curly-newline
     const { bus_id, origin, destination, trip_date, fare } = req.body;
     // eslint-disable-next-line prefer-const
@@ -70,22 +80,21 @@ const Trip = {
           status,
         },
       });
-    } catch (error) {
-      console.log(error);
-      if (error.routine === 'ri_ReportViolation') {
+    } catch (err) {
+      if (err.routine === 'ri_ReportViolation') {
         return res.status(400).json({
           status: 'error',
           error: 'No bus with such ID found',
         });
       }
 
-      if (error.routine === '_bt_check_unique') {
+      if (err.routine === '_bt_check_unique') {
         return res.status(400).json({
           status: 'error',
           error: 'Bus is Active, please use another',
         });
       }
-      return res.status(400).json({
+      return res.status(500).json({
         status: 'error',
         error: 'Something went wrong, try again or contact our engineers',
       });
@@ -115,7 +124,7 @@ const Trip = {
 
   async cancelATrip(req, res) {
     // check for admin user
-    if (req.admin === false) {
+    if (!req.user.is_admin) {
       return res.status(403).json({
         status: 'error',
         error: 'Unauthorized!',
@@ -147,7 +156,6 @@ const Trip = {
       });
     }
   },
-
 };
 
 export default Trip;

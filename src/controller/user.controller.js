@@ -1,50 +1,34 @@
 /* eslint-disable camelcase */
-import moment from 'moment';
 import db from '../model/db';
 import Authentication from '../middleware/Auth';
 import Helper from '../helper/Helper';
-import validate from '../helper/validate';
 import { create_user, login_user } from '../model/user.model';
-
+import check_valid_input from '../helper/validate';
 
 const User = {
   /**
-   * Create A User
+   * User signup
    * @param {object} req
    * @param {object} res
    * @returns {object} user object
    */
 
-  async create(req, res) {
+  async sign_up(req, res) {
     const {
-      first_name, last_name, email, password,
+      first_name, last_name, email,
     } = req.body;
+
     let { is_admin } = req.body;
-
-    if (!first_name || !last_name || !email || !password) {
-      return res.status(400).json({
-        status: 'error',
-        error: 'All fields are required',
-      });
-    }
-
     // eslint-disable-next-line no-unused-expressions
     !is_admin ? is_admin = false : true;
 
-    if (!validate.isValidEmail(email)) {
-      return res.status(400).json({
+    const { error } = check_valid_input.createUser(req.body);
+    if (error) {
+      return res.status(422).json({
         status: 'error',
-        error: 'Please enter a valid email address',
+        error: error.details[0].message,
       });
     }
-
-    if (validate.passwordLength(password)) {
-      return res.status(400).json({
-        status: 'error',
-        error: 'Password length too short',
-      });
-    }
-
     const hash_password = Helper.hash_password(req.body.password);
 
     const values = [
@@ -52,14 +36,13 @@ const User = {
       last_name,
       email,
       hash_password,
-      moment(new Date()),
-      moment(new Date()),
+      new Date(),
+      new Date(),
       is_admin,
     ];
 
     try {
       const { rows } = await db.query(create_user, values);
-      // eslint-disable-next-line no-shadow
       const { user_id } = rows[0];
       const token = Authentication.generate_token(rows[0].user_id, rows[0].is_admin, rows[0].email);
 
@@ -74,9 +57,9 @@ const User = {
           token,
         },
       });
-    } catch (error) {
+    } catch (err) {
       // check if email already exist
-      if (error.routine === '_bt_check_unique') {
+      if (err.routine === '_bt_check_unique') {
         return res.status(409).json({
           status: 'error',
           error: 'User with the email already exist',
@@ -84,7 +67,7 @@ const User = {
       }
       return res.status(500).json({
         status: 'error',
-        error: 'Oops! Something went wrong, try again',
+        error: 'Oops! Something went wrong, please try again',
       });
     }
   },
@@ -96,32 +79,24 @@ const User = {
   * @returns {object} user object
   */
   async login(req, res) {
-    // eslint-disable-next-line no-console
-    if (!req.body.email || !req.body.password) {
-      return res.status(400).json({
+    const { error } = check_valid_input.login(req.body);
+    if (error) {
+      return res.status(422).json({
         status: 'error',
-        error: 'Some values are missing',
+        error: error.details[0].message,
       });
     }
-
-    if (!validate.isValidEmail(req.body.email)) {
-      return res.status(400).json({
-        status: 'error',
-        error: 'Please enter a valid email address',
-      });
-    }
-
     try {
       const { rows } = await db.query(login_user, [req.body.email]);
       if (!rows[0]) {
-        res.status(401).json({
+        return res.status(404).json({
           status: 'error',
-          error: 'Some values are missing',
+          error: 'User not found',
         });
       }
-
+      // console.log(req.body.password);
       if (!Helper.compare_password(rows[0].password, req.body.password)) {
-        res.status(400).json({
+        return res.status(400).json({
           status: 'error',
           error: 'Email or Password not correct',
         });
@@ -131,7 +106,7 @@ const User = {
         user_id, first_name, email, is_admin,
       } = rows[0];
       // generate token
-      const token = Authentication.generate_token(rows[0].user_id, is_admin, email);
+      const token = Authentication.generate_token(rows[0].user_id, rows[0].is_admin, rows[0].email);
       return res.status(201).json({
         status: 'success',
         data: {
@@ -142,10 +117,11 @@ const User = {
           token,
         },
       });
-    } catch (error) {
-      return res.status(401).json({
+    } catch (err) {
+      // console.log(err)
+      return res.status(500).json({
         status: 'error',
-        error: 'The credentials you provided is incorrect',
+        error: 'Ooops! Something went wrong, please try again',
       });
     }
   },
