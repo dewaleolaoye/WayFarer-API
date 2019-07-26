@@ -88,6 +88,19 @@ class check_valid_input {
     });
     return Joi.validate(trip_details, schema, validationOptions);
   }
+
+  static bookings(details) {
+    const schema = Joi.object().keys({
+      trip_id: Joi.number().integer()
+        .required()
+        .error(() => 'Trip ID is required'),
+      seat_number: Joi.number().integer()
+        .required()
+        .error(() => 'Seat number is required'),
+    });
+
+    return Joi.validate(details, schema, validationOptions);
+  }
 }
 
 export default check_valid_input;

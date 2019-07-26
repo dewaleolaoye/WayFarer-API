@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import moment from 'moment';
+// import moment from 'moment';
 import db from '../model/db';
 import {
   book_trip_query,
@@ -10,6 +10,7 @@ import {
   get_all_user_booking_query,
   delete_booking,
 } from '../model/booking.model';
+import check_valid_input from '../helper/validate';
 
 
 const Bookings = {
@@ -20,6 +21,15 @@ const Bookings = {
   */
   async book_trip(req, res) {
     const { trip_id, seat_number } = req.body;
+
+    const { error } = check_valid_input.bookings(req.body);
+    if (error) {
+      return res.status(422).json({
+        status: 'error',
+        error: error.details[0].message,
+      });
+    }
+
     try {
       const { rows } = await db.query(get_trip_query, [trip_id]);
       if (!rows[0]) {
@@ -35,7 +45,7 @@ const Bookings = {
           error: 'This trip has been canceled, you can not book it',
         });
       }
-      const get_user = await db.query(find_user_query, [req.user]);
+      const get_user = await db.query(find_user_query, [req.user.user_id]);
       const user = get_user.rows[0];
       // check if user has booked a seat on the trip
       const new_booking = await db.query(check_booked_query,
@@ -48,9 +58,9 @@ const Bookings = {
       }
 
       const values = [
-        req.user,
+        user.user_id,
         trip_id,
-        moment(new Date()),
+        new Date(),
         rows[0].bus_id,
         rows[0].trip_date,
         seat_number,
@@ -64,8 +74,8 @@ const Bookings = {
         status: 'success',
         data: booking.rows[0],
       });
-    } catch (error) {
-      return res.status(400).json({
+    } catch (err) {
+      return res.status(500).json({
         status: 'error',
         error: 'Something went wrong, try again',
       });
@@ -78,14 +88,14 @@ const Bookings = {
   */
   // eslint-disable-next-line consistent-return
   async get_all_admin_booking(req, res) {
-    if (!req.admin) {
+    if (!req.user.is_admin) {
       res.status(400).json({
         status: 'error',
-        error: 'Unauthorized routerrrr',
+        error: 'Unauthorized router',
       });
     }
     try {
-      if (req.admin) {
+      if (req.user.is_admin) {
         const { rows } = await db.query(get_all_admin_booking_query);
         if (!rows[0]) {
           return res.status(404).json({
@@ -98,17 +108,18 @@ const Bookings = {
           data: rows,
         });
       }
-    } catch (error) {
-      return res.status(400).json({
+    } catch (err) {
+      return res.status(500).json({
+        status: 'error',
         error: 'Something went wrong, try again',
       });
     }
   },
 
   async get_user_booking(req, res) {
-    console.log(req.user);
+    // console.log(req.user);
     try {
-      const { rows } = await db.query(get_all_user_booking_query, [req.user]);
+      const { rows } = await db.query(get_all_user_booking_query, [req.user.user_id]);
       if (!rows[0]) {
         return res.status(404).json({
           status: 'error',
@@ -119,8 +130,9 @@ const Bookings = {
         status: 'success',
         data: rows,
       });
-    } catch (error) {
-      return res.status(400).json({
+    } catch (err) {
+      return res.status(500).json({
+        status: 'error',
         error: 'Something went wrong, try again',
       });
     }
@@ -132,7 +144,7 @@ const Bookings = {
  */
   async deleteBooking(req, res) {
     try {
-      const { rows } = await db.query(delete_booking, [req.params.booking_id, req.user]);
+      const { rows } = await db.query(delete_booking, [req.params.booking_id, req.user.user_id]);
       if (!rows[0]) {
         return res.status(404).json({
           status: 'error',
@@ -145,7 +157,7 @@ const Bookings = {
           message: 'Booking successfully deleted',
         },
       });
-    } catch (error) {
+    } catch (err) {
       return res.status(400).json({
         status: 'error',
         error: 'Something went wrong, try again',
