@@ -14,13 +14,11 @@ const User = {
    */
 
   async sign_up(req, res) {
-    const {
-      first_name, last_name, email,
-    } = req.body;
+    const { first_name, last_name, email, password } = req.body;
 
     let { is_admin } = req.body;
     // eslint-disable-next-line no-unused-expressions
-    !is_admin ? is_admin = false : true;
+    !is_admin ? (is_admin = false) : true;
 
     const { error } = check_valid_input.createUser(req.body);
     if (error) {
@@ -29,7 +27,7 @@ const User = {
         error: error.details[0].message,
       });
     }
-    const hash_password = Helper.hash_password(req.body.password);
+    const hash_password = Helper.hash_password(password);
 
     const values = [
       first_name,
@@ -44,7 +42,11 @@ const User = {
     try {
       const { rows } = await db.query(create_user, values);
       const { user_id } = rows[0];
-      const token = Authentication.generate_token(rows[0].user_id, rows[0].is_admin, rows[0].email);
+      const token = Authentication.generate_token(
+        rows[0].user_id,
+        rows[0].is_admin,
+        rows[0].email,
+      );
 
       return res.status(201).json({
         status: 'success',
@@ -73,11 +75,11 @@ const User = {
   },
 
   /**
-  * User login
-  * @param {object} req
-  * @param {object} res
-  * @returns {object} user object
-  */
+   * User login
+   * @param {object} req
+   * @param {object} res
+   * @returns {object} user object
+   */
   async login(req, res) {
     const { error } = check_valid_input.login(req.body);
     if (error) {
@@ -103,10 +105,17 @@ const User = {
       }
       const {
         // eslint-disable-next-line camelcase
-        user_id, first_name, email, is_admin,
+        user_id,
+        first_name,
+        email,
+        is_admin,
       } = rows[0];
       // generate token
-      const token = Authentication.generate_token(rows[0].user_id, rows[0].is_admin, rows[0].email);
+      const token = Authentication.generate_token(
+        rows[0].user_id,
+        rows[0].is_admin,
+        rows[0].email,
+      );
       return res.status(201).json({
         status: 'success',
         data: {

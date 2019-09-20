@@ -5,11 +5,11 @@ import check_valid_input from '../helper/validate';
 
 const Bus = {
   /**
-* Admin can add bus
-* @param {object} req
-* @param {object} res
-* @returns {object} bus object
-*/
+   * Admin can add bus
+   * @param {object} req
+   * @param {object} res
+   * @returns {object} bus object
+   */
 
   async addBus(req, res) {
     if (!req.user.is_admin) {
@@ -19,9 +19,7 @@ const Bus = {
       });
     }
 
-    const {
-      number_plate, manufacturer, model, year, capacity,
-    } = req.body;
+    const { number_plate, manufacturer, model, year, capacity } = req.body;
 
     const { error } = check_valid_input.add_bus(req.body);
     if (error) {
@@ -69,11 +67,11 @@ const Bus = {
   },
 
   /**
-    * Admin can see all buses
-    * @param {object} req
-    * @param {object} res
-    * @returns {object} bus object
-    */
+   * Admin can see all buses
+   * @param {object} req
+   * @param {object} res
+   * @returns {object} bus object
+   */
   // eslint-disable-next-line consistent-return
   async getAllBus(req, res) {
     if (!req.user.is_admin) {

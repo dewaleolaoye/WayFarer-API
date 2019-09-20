@@ -4,19 +4,18 @@ import db from '../model/db';
 
 const Authentication = {
   /**
-     * Generate token
-     *
-     * @param {*} user_id
-     * @param {*} email
-     * @param {*} is_admin
-     */
+   * Generate token
+   *
+   * @param {*} user_id
+   * @param {*} email
+   * @param {*} is_admin
+   */
 
   // eslint-disable-next-line camelcase
   generate_token(user_id, is_admin, email) {
-    const token = jwt.sign({ user_id, is_admin, email },
-      process.env.SECRET, {
-        expiresIn: '24h',
-      });
+    const token = jwt.sign({ user_id, is_admin, email }, process.env.SECRET, {
+      expiresIn: '24h',
+    });
     return token;
   },
 
@@ -56,7 +55,7 @@ const Authentication = {
       }
       return res.status(400).json({
         status: 400,
-        error: 'Ooops! Something went wrong.',
+        error: 'Provide Token',
       });
     }
   },

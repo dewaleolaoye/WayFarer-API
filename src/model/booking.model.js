@@ -10,7 +10,9 @@ const check_booked_query = 'SELECT * FROM bookings WHERE (trip_id = $1 and user_
 
 const get_all_admin_booking_query = 'SELECT * FROM bookings';
 const get_all_user_booking_query = 'SELECT * FROM bookings WHERE user_id = $1';
-const delete_booking = 'DELETE FROM bookings WHERE (booking_id = $1 and user_id = $2) returning *';
+// eslint-disable-next-line operator-linebreak
+const delete_booking =
+  'DELETE FROM bookings WHERE (booking_id = $1 and user_id = $2) returning *';
 
 export {
   book_trip_query,

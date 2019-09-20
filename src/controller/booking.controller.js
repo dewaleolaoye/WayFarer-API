@@ -12,13 +12,12 @@ import {
 } from '../model/booking.model';
 import check_valid_input from '../helper/validate';
 
-
 const Bookings = {
   /**
    * Users can book a seat for a trip
    * @param {*} req
    * @param {*} res
-  */
+   */
   async book_trip(req, res) {
     const { trip_id, seat_number } = req.body;
 
@@ -48,8 +47,10 @@ const Bookings = {
       const get_user = await db.query(find_user_query, [req.user.user_id]);
       const user = get_user.rows[0];
       // check if user has booked a seat on the trip
-      const new_booking = await db.query(check_booked_query,
-        [rows[0].trip_id, user.user_id]);
+      const new_booking = await db.query(check_booked_query, [
+        rows[0].trip_id,
+        user.user_id,
+      ]);
       if (new_booking.rows[0]) {
         return res.status(400).json({
           status: 'error',
@@ -85,7 +86,7 @@ const Bookings = {
    * Admin can see all bookings
    * @param {*} req
    * @param {*} res
-  */
+   */
   // eslint-disable-next-line consistent-return
   async get_all_admin_booking(req, res) {
     if (!req.user.is_admin) {
@@ -138,13 +139,16 @@ const Bookings = {
     }
   },
   /**
- * User can delete their bookings
- * @param {*} req
- * @param {*} res
- */
+   * User can delete their bookings
+   * @param {*} req
+   * @param {*} res
+   */
   async deleteBooking(req, res) {
     try {
-      const { rows } = await db.query(delete_booking, [req.params.booking_id, req.user.user_id]);
+      const { rows } = await db.query(delete_booking, [
+        req.params.booking_id,
+        req.user.user_id,
+      ]);
       if (!rows[0]) {
         return res.status(404).json({
           status: 'error',
