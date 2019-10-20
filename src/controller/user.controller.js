@@ -14,7 +14,14 @@ const User = {
    */
 
   async sign_up(req, res) {
-    const { first_name, last_name, email, password } = req.body;
+    const { first_name, last_name, email, password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Password did not match',
+      });
+    }
 
     let { is_admin } = req.body;
     // eslint-disable-next-line no-unused-expressions
@@ -41,7 +48,7 @@ const User = {
 
     try {
       const { rows } = await db.query(create_user, values);
-      const { user_id } = rows[0];
+      const { user_id, is_admin, email } = rows[0];
       const token = Authentication.generate_token(
         rows[0].user_id,
         rows[0].is_admin,

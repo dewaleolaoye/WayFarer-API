@@ -6,11 +6,7 @@ import Authentication from '../middleware/Auth';
 const router = express.Router();
 router.post('/bookings', Authentication.verify_token, Bookings.book_trip);
 
-router.get(
-  '/bookings',
-  Authentication.verify_token,
-  Bookings.get_all_admin_booking,
-);
+router.get('/bookings', Authentication.verify_token, Bookings.get_all_admin_booking);
 
 router.get(
   '/bookings/:booking_id',

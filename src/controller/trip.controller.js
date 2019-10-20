@@ -8,14 +8,13 @@ import {
   cancel_a_trip_query,
 } from '../model/trip.model';
 
-
 const Trip = {
   /**
-  * Admin can create trip
-  * @param {object} req
-  * @param {object} res
-  * @returns {object} bus object
-  */
+   * Admin can create trip
+   * @param {object} req
+   * @param {object} res
+   * @returns {object} bus object
+   */
   async create_trip(req, res) {
     // eslint-disable-next-line no-console
     // console.log(req.user)
@@ -131,11 +130,7 @@ const Trip = {
       });
     }
     try {
-      const values = [
-        'canceled',
-        new Date(),
-        req.params.id,
-      ];
+      const values = ['canceled', new Date(), req.params.id];
 
       const { rows } = await db.query(cancel_a_trip_query, values);
       if (rows.length <= 0) {
