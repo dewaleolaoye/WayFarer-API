@@ -48,7 +48,7 @@ const User = {
 
     try {
       const { rows } = await db.query(create_user, values);
-      const { user_id, is_admin, email } = rows[0];
+      const { user_id } = rows[0];
       const token = Authentication.generate_token(
         rows[0].user_id,
         rows[0].is_admin,
